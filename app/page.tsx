@@ -166,6 +166,7 @@ export default function Home() {
       {showResults && (
         <ResultsContainer
           searchName={searchName}
+          searchAge={searchAge}
           onClose={handleCloseResults}
           hasPhoto={!!photoFile}
           blurredPhotoUrl={blurredPhotoUrl}

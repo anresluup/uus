@@ -8,12 +8,19 @@ import { getRedTrackUrl } from "@/lib/redtrack-url"
 
 interface ResultsContainerProps {
   searchName: string
+  searchAge?: string
   onClose: () => void
   hasPhoto: boolean
   blurredPhotoUrl: string | null
 }
 
-export default function ResultsContainer({ searchName, onClose, hasPhoto, blurredPhotoUrl }: ResultsContainerProps) {
+export default function ResultsContainer({
+  searchName,
+  searchAge = "28",
+  onClose,
+  hasPhoto,
+  blurredPhotoUrl,
+}: ResultsContainerProps) {
   const [countdown, setCountdown] = useState(600) // 10 minutes
   const { userLocation, pricing } = useLanguage()
   const [redTrackUrl] = useState(getRedTrackUrl())
@@ -37,6 +44,18 @@ export default function ResultsContainer({ searchName, onClose, hasPhoto, blurre
   const handlePaymentClick = () => {
     clickPayment()
   }
+
+  // Format the name to show first name and last initial
+  const formatDisplayName = (fullName: string) => {
+    const nameParts = fullName.trim().split(" ")
+    if (nameParts.length === 1) return nameParts[0]
+
+    const firstName = nameParts[0]
+    const lastInitial = nameParts[nameParts.length - 1][0] + "."
+    return `${firstName} ${lastInitial}`
+  }
+
+  const displayName = formatDisplayName(searchName)
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 overflow-y-auto">
@@ -96,6 +115,11 @@ export default function ResultsContainer({ searchName, onClose, hasPhoto, blurre
                   </div>
                   <span className="text-sm font-medium text-green-600">80% match</span>
                 </div>
+                <div className="px-4 pt-3 pb-1 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {displayName}, {searchAge}
+                  </h3>
+                </div>
 
                 <div className="p-4">
                   <div className="flex flex-col md:flex-row gap-4">
@@ -150,7 +174,7 @@ export default function ResultsContainer({ searchName, onClose, hasPhoto, blurre
                         </div>
                         <div>
                           <p className="text-xs text-gray-500 mb-1">Age/DOB:</p>
-                          <p className="font-medium text-gray-800 blur-sm">3* years old</p>
+                          <p className="font-medium text-gray-800 blur-sm">{searchAge} years old</p>
                         </div>
                       </div>
 
