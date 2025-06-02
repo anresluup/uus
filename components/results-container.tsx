@@ -24,7 +24,7 @@ interface ResultsContainerProps {
   searchName: string
   searchAge?: string
   onClose: () => void
-  hasPhoto?: boolean // Added to potentially influence results display
+  hasPhoto?: boolean
 }
 
 export default function ResultsContainer({ searchName, searchAge, onClose, hasPhoto }: ResultsContainerProps) {
@@ -32,21 +32,17 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
   const { t, currency, userLocation } = useLanguage()
 
   const handleUnlockClick = () => {
-    // Track the unlock click event
     clickPayment()
   }
 
-  // Replace {city} placeholder with actual city
   const formatLocationText = (text: string) => {
     return text.replace("{city}", userLocation.city)
   }
 
-  // Simulate age variation for display
   const displayAge = (baseAge?: string) => {
     if (!baseAge) return "N/A"
     const ageNum = Number.parseInt(baseAge, 10)
-    if (isNaN(ageNum)) return baseAge // If not a number, return as is
-    // For demo, let's make the first match exact, second +/- 2
+    if (isNaN(ageNum)) return baseAge
     return `${ageNum} years old`
   }
   const displayAgeVariation = (baseAge?: string) => {
@@ -205,8 +201,6 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
                 href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
                 className="mt-2 bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm"
                 onClick={handleUnlockClick}
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 <Unlock size={16} />
                 {t("results.unlock")}
@@ -312,8 +306,6 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
                 href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
                 className="mt-2 bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm"
                 onClick={handleUnlockClick}
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 <Unlock size={16} />
                 {t("results.unlock")}
@@ -384,8 +376,6 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
             href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
             className="unlock-cta flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg w-full max-w-[280px] mx-auto"
             onClick={handleUnlockClick}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             <Unlock size={18} />
             {t("results.unlock")}

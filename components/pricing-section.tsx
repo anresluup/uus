@@ -1,66 +1,117 @@
 "use client"
-import { useTranslation } from "react-i18next"
 
-const PricingSection = () => {
-  const { t } = useTranslation()
+import { Check, Lock, Shield } from "lucide-react"
+import { clickPayment } from "@/lib/analytics"
+import { useLanguage } from "@/contexts/language-context"
+
+export default function PricingSection() {
+  const { t, currency } = useLanguage()
 
   const handlePaymentClick = () => {
-    // Track the click event (replace with your actual tracking logic)
-    console.log("Payment button clicked!")
+    // Track the payment click event
+    clickPayment()
   }
 
   return (
-    <section className="bg-gray-100 py-12">
-      <div className="container mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-6">{t("pricing.title")}</h2>
-        <p className="text-gray-700 mb-8">{t("pricing.subtitle")}</p>
+    <section id="pricing" className="py-16 bg-white">
+      <div className="container mx-auto px-6 text-center">
+        <h2 className="text-3xl font-bold mb-12">{t("pricing.title")}</h2>
 
-        <div className="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-6">
-          {/* Basic Plan */}
-          <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-sm">
-            <h3 className="text-xl font-semibold mb-4">{t("pricing.basic.title")}</h3>
-            <div className="text-4xl font-bold mb-4">${t("pricing.basic.price")}</div>
-            <p className="text-gray-600 mb-4">{t("pricing.basic.description")}</p>
-            <ul className="list-disc list-inside text-gray-700 mb-4">
-              <li>{t("pricing.basic.feature1")}</li>
-              <li>{t("pricing.basic.feature2")}</li>
-              <li>{t("pricing.basic.feature3")}</li>
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="p-8">
+            <div className="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full inline-block mb-4">
+              {t("pricing.bestValue")}
+            </div>
+            <h3 className="text-2xl font-bold mb-2">{t("pricing.lifetime")}</h3>
+            <div className="text-4xl font-bold text-red-500 mb-4">{t("pricing.price")}</div>
+            <p className="text-gray-500 mb-6">{t("pricing.subtitle")}</p>
+
+            <ul className="text-left space-y-3 mb-8">
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature1")}</span>
+              </li>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature2")}</span>
+              </li>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature3")}</span>
+              </li>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature4")}</span>
+              </li>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature5")}</span>
+              </li>
             </ul>
+
             <a
               href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
               className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md flex items-center justify-center"
               onClick={handlePaymentClick}
-              target="_blank"
-              rel="noopener noreferrer"
+              // Removed target="_blank" and rel="noopener noreferrer" if you prefer to revert that
             >
               {t("pricing.cta")}
             </a>
-          </div>
 
-          {/* Pro Plan */}
-          <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-sm">
-            <h3 className="text-xl font-semibold mb-4">{t("pricing.pro.title")}</h3>
-            <div className="text-4xl font-bold mb-4">${t("pricing.pro.price")}</div>
-            <p className="text-gray-600 mb-4">{t("pricing.pro.description")}</p>
-            <ul className="list-disc list-inside text-gray-700 mb-4">
-              <li>{t("pricing.pro.feature1")}</li>
-              <li>{t("pricing.pro.feature2")}</li>
-              <li>{t("pricing.pro.feature3")}</li>
-            </ul>
-            <a
-              href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
-              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md flex items-center justify-center"
-              onClick={handlePaymentClick}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("pricing.cta")}
-            </a>
+            <div className="flex justify-center space-x-4 mt-6">
+              <div className="flex items-center text-xs text-gray-500">
+                <Lock className="mr-1" size={12} />
+                <span>{t("pricing.secure")}</span>
+              </div>
+              <div className="flex items-center text-xs text-gray-500">
+                <Shield className="mr-1" size={12} />
+                <span>{t("pricing.discreet")}</span>
+              </div>
+            </div>
+
+            {/* Trust badges */}
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <div className="flex flex-col items-center">
+                <div className="flex items-center justify-center mb-3">
+                  <img
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/trustpilot-p20zNrYMsLNW1ZssHjLiw2Xj8PZPwS.webp"
+                    alt="Trustpilot Excellent 4.5 stars"
+                    className="h-14"
+                  />
+                </div>
+                <p className="text-sm text-gray-500 mb-4">{t("pricing.trusted")}</p>
+                <div className="flex flex-wrap justify-center gap-3 mt-2">
+                  <div className="bg-gray-50 border border-gray-100 rounded-md px-3 py-2 flex items-center">
+                    <Shield className="text-gray-500 mr-2" size={16} />
+                    <span className="text-xs font-medium">{t("pricing.ssl")}</span>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-100 rounded-md px-3 py-2 flex items-center">
+                    <Lock className="text-gray-500 mr-2" size={16} />
+                    <span className="text-xs font-medium">{t("pricing.encryption")}</span>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-100 rounded-md px-3 py-2 flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-gray-500 mr-2"
+                    >
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span className="text-xs font-medium">{t("pricing.gdpr")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
   )
 }
-
-export default PricingSection
