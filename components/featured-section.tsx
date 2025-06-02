@@ -1,47 +1,36 @@
-"use client"
-
-import { useLanguage } from "@/contexts/language-context"
-
-export default function FeaturedSection() {
-  const { t } = useLanguage()
-
+const FeaturedSection = () => {
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="container mx-auto px-6">
-        <h2 className="text-2xl font-bold text-center mb-10">{t("featured.title")}</h2>
-
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 mb-12">
-          <img
-            src="/forbes-logo-generic.png"
-            alt="Forbes"
-            className="h-14 md:h-18 grayscale hover:grayscale-0 transition-all duration-300"
-          />
-          <img
-            src="/techcrunch-logo.png"
-            alt="TechCrunch"
-            className="h-14 md:h-18 grayscale hover:grayscale-0 transition-all duration-300"
-          />
-          <img
-            src="/product-hunt-logo.png"
-            alt="Product Hunt"
-            className="h-16 md:h-20 grayscale hover:grayscale-0 transition-all duration-300"
-          />
-          <img
-            src="/wired-logo.png"
-            alt="Wired"
-            className="h-14 md:h-18 grayscale hover:grayscale-0 transition-all duration-300"
-          />
+    <div className="bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="lg:text-center">
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Featured In</p>
+          <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            We've been fortunate to be recognized by leading publications and platforms.
+          </p>
         </div>
 
-        <div className="flex flex-col items-center">
-          <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/trustpilot-p20zNrYMsLNW1ZssHjLiw2Xj8PZPwS.webp"
-            alt="Trustpilot Excellent 4.5 stars"
-            className="h-14 mb-4"
-          />
-          <p className="text-center text-gray-600 max-w-2xl mx-auto">{t("featured.trustpilot")}</p>
+        <div className="mt-10">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-6 lg:grid-cols-5">
+            <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+              <img src="/product-hunt-logo.png" alt="Product Hunt" className="h-8 md:h-10 object-contain" />
+            </div>
+            <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+              <img src="/placeholder-bl91s.png" alt="Forbes" className="h-8 md:h-10 object-contain" />
+            </div>
+            <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+              <img src="/placeholder-6ifjw.png" alt="TechCrunch" className="h-8 md:h-10 object-contain" />
+            </div>
+            <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+              <img src="/generic-tech-logo.png" alt="Wired" className="h-8 md:h-10 object-contain" />
+            </div>
+            <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+              <img src="/lifehacker-logo.png" alt="Lifehacker" className="h-8 md:h-10 object-contain" />
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
+
+export default FeaturedSection
