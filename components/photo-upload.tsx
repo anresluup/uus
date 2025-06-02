@@ -6,10 +6,9 @@ import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Upload, X, Check } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
-import { blurImage } from "@/lib/image-blur"
 
 interface PhotoUploadProps {
-  onPhotoUpload: (file: File, blurredDataUrl?: string) => void
+  onPhotoUpload: (file: File) => void
   className?: string
 }
 
@@ -27,7 +26,7 @@ export default function PhotoUpload({ onPhotoUpload, className = "" }: PhotoUplo
     }
   }
 
-  const processFile = async (file: File) => {
+  const processFile = (file: File) => {
     // Check if file is an image
     if (!file.type.startsWith("image/")) {
       alert(t("upload.invalidFileType"))
@@ -45,19 +44,9 @@ export default function PhotoUpload({ onPhotoUpload, className = "" }: PhotoUplo
     reader.onload = () => {
       setPreviewUrl(reader.result as string)
       setIsUploaded(true)
-    }
-    reader.readAsDataURL(file)
-
-    try {
-      // Generate blurred version of the image
-      const blurredDataUrl = await blurImage(file, 50)
-      // Call the onPhotoUpload callback with the file and blurred data URL
-      onPhotoUpload(file, blurredDataUrl)
-    } catch (error) {
-      console.error("Error blurring image:", error)
-      // Still upload the original file if blurring fails
       onPhotoUpload(file)
     }
+    reader.readAsDataURL(file)
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -104,7 +93,7 @@ export default function PhotoUpload({ onPhotoUpload, className = "" }: PhotoUplo
 
       {!previewUrl ? (
         <div
-          className={`upload-area border-2 border-dashed rounded-lg p-3 md:p-4 text-center cursor-pointer transition-colors ${
+          className={`upload-area border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
             isDragging ? "border-white bg-red-600/50" : "border-white hover:border-white hover:bg-red-600/30"
           }`}
           onDragOver={handleDragOver}
@@ -120,17 +109,14 @@ export default function PhotoUpload({ onPhotoUpload, className = "" }: PhotoUplo
             }
           }}
         >
-          <div className="flex flex-col items-center justify-center py-3 md:py-4">
-            <Upload className="w-8 h-8 md:w-10 md:h-10 text-white mb-2" />
-            <p className="text-xs md:text-sm font-medium mb-1 text-white">{t("upload.dragDrop")}</p>
-            <p className="text-xs text-white/80 mb-2 md:mb-3">{t("upload.orClickToUpload")}</p>
-            <Button
-              size="sm"
-              className="text-xs bg-white text-red-500 hover:bg-white/90 hover:text-red-600 py-1.5 px-3"
-            >
+          <div className="flex flex-col items-center justify-center py-4">
+            <Upload className="w-10 h-10 text-white mb-2" />
+            <p className="text-sm font-medium mb-1 text-white">{t("upload.dragDrop")}</p>
+            <p className="text-xs text-white/80 mb-3">{t("upload.orClickToUpload")}</p>
+            <Button size="sm" className="text-xs bg-white text-red-500 hover:bg-white/90 hover:text-red-600">
               {t("upload.selectPhoto")}
             </Button>
-            <p className="text-xs text-white/80 mt-2 md:mt-3">{t("upload.maxFileSize")}</p>
+            <p className="text-xs text-white/80 mt-3">{t("upload.maxFileSize")}</p>
           </div>
         </div>
       ) : (

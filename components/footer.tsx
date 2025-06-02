@@ -13,85 +13,83 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between mb-8">
           <div className="mb-6 md:mb-0">
             <h3 className="text-xl font-bold text-white mb-4">CheatScanner</h3>
-            <p className="text-gray-400 max-w-xs">
-              Providing peace of mind through technology and transparency in relationships.
-            </p>
+            <p className="text-gray-400 max-w-xs">{t("footer.desc")}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="font-bold mb-4 text-white">Company</h4>
+              <h4 className="font-bold mb-4">{t("footer.company")}</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="#about" className="hover:text-white transition-colors">
-                    About Us
+                  <Link href="#" className="hover:text-white">
+                    {t("footer.aboutUs")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="#how-it-works" className="hover:text-white transition-colors">
-                    How It Works
+                  <Link href="#how-it-works" className="hover:text-white">
+                    {t("footer.howItWorks")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy" className="hover:text-white transition-colors">
-                    Privacy Policy
+                  <Link href="/privacy-policy" className="hover:text-white">
+                    {t("footer.privacyPolicy")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms-of-service" className="hover:text-white transition-colors">
-                    Terms of Service
+                  <Link href="/terms-of-service" className="hover:text-white">
+                    {t("footer.terms")}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4 text-white">Support</h4>
+              <h4 className="font-bold mb-4">{t("footer.support")}</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/contact-us" className="hover:text-white transition-colors">
-                    Contact Us
+                  <Link href="/contact-us" className="hover:text-white">
+                    {t("footer.contactUs")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="#faq" className="hover:text-white transition-colors">
-                    FAQ
+                  <Link href="#faq" className="hover:text-white">
+                    {t("footer.faq")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact-us" className="hover:text-white transition-colors">
-                    Help Center
+                  <Link href="/contact-us" className="hover:text-white">
+                    {t("footer.helpCenter")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact-us" className="hover:text-white transition-colors">
-                    Report Issues
+                  <Link href="/contact-us" className="hover:text-white">
+                    {t("footer.reportIssues")}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4 text-white">Legal</h4>
+              <h4 className="font-bold mb-4">{t("footer.legal")}</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/privacy-policy" className="hover:text-white transition-colors">
-                    Privacy Policy
+                  <Link href="/privacy-policy" className="hover:text-white">
+                    {t("footer.privacyPolicy2")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms-of-service" className="hover:text-white transition-colors">
-                    Terms & Conditions
+                  <Link href="/terms-of-service" className="hover:text-white">
+                    {t("footer.terms2")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy#cookies" className="hover:text-white transition-colors">
-                    Cookie Policy
+                  <Link href="/privacy-policy#cookies" className="hover:text-white">
+                    {t("footer.cookiePolicy")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy#gdpr" className="hover:text-white transition-colors">
-                    GDPR Compliance
+                  <Link href="/privacy-policy#gdpr" className="hover:text-white">
+                    {t("footer.gdpr")}
                   </Link>
                 </li>
               </ul>
@@ -99,32 +97,34 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 pt-6 mt-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
-            <p className="text-sm mb-4 sm:mb-0">© {new Date().getFullYear()} CheatScanner. All rights reserved.</p>
+        <div className="border-t border-gray-700 pt-8 mt-8 flex flex-col items-center justify-between">
+          <div className="text-center mb-4">
+            <p className="text-sm font-medium text-gray-400 mb-1">SCANNER JVLA OÜ</p>
+            <p className="text-xs text-gray-500">
+              Business location
+              <br />
+              Järve küla 15-24 Järve, Ida-Virumaa, 30331, Estonia
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-between w-full">
+            <p className="text-sm mb-4 md:mb-0">
+              © {new Date().getFullYear()} CheatScanner. {t("footer.rights")}
+            </p>
             <div className="flex space-x-6">
-              <Link href="#" className="hover:text-white transition-colors" aria-label="Facebook">
+              <Link href="#" className="hover:text-white">
                 <Facebook size={18} />
               </Link>
-              <Link href="#" className="hover:text-white transition-colors" aria-label="Twitter">
+              <Link href="#" className="hover:text-white">
                 <Twitter size={18} />
               </Link>
-              <Link href="#" className="hover:text-white transition-colors" aria-label="Instagram">
+              <Link href="#" className="hover:text-white">
                 <Instagram size={18} />
               </Link>
-              <Link href="#" className="hover:text-white transition-colors" aria-label="LinkedIn">
+              <Link href="#" className="hover:text-white">
                 <Linkedin size={18} />
               </Link>
             </div>
-          </div>
-
-          <div className="text-center mt-4">
-            <p className="text-sm text-gray-400">
-              Contact us:{" "}
-              <a href="mailto:support@cheatscanner.com" className="text-blue-400 hover:text-blue-300">
-                support@cheatscanner.com
-              </a>
-            </p>
           </div>
         </div>
       </div>

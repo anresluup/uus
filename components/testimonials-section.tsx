@@ -9,7 +9,7 @@ export default function TestimonialsSection() {
           <p className="text-gray-600">Read what our users have to say about CheatScanner</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="testimonial-card bg-white p-6">
             <div className="flex items-center mb-4">
               <div className="bg-red-100 h-10 w-10 rounded-full flex items-center justify-center text-red-500">

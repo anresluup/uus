@@ -1,376 +1,226 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { X, Lock, Check, Clock, MapPin, Shield, AlertCircle, Info } from "lucide-react"
-import { useLanguage } from "@/contexts/language-context"
+import { useState } from "react"
+import { Search, MapPin, CheckCircle, User, AlertCircle, Lock, Unlock, Clock, Shield, X } from "lucide-react"
 import { clickPayment } from "@/lib/analytics"
-import { getRedTrackUrl } from "@/lib/redtrack-url"
+import { useLanguage } from "@/contexts/language-context"
 
 interface ResultsContainerProps {
   searchName: string
-  searchAge?: string
+  searchAge?: string // Added searchAge
   onClose: () => void
-  hasPhoto: boolean
-  blurredPhotoUrl: string | null
+  // hasPhoto prop is not used here, can be removed if not needed by parent logic for this component
 }
 
-export default function ResultsContainer({
-  searchName,
-  searchAge = "28",
-  onClose,
-  hasPhoto,
-  blurredPhotoUrl,
-}: ResultsContainerProps) {
-  const [countdown, setCountdown] = useState(600) // 10 minutes
-  const { userLocation, pricing } = useLanguage()
-  const [redTrackUrl] = useState(getRedTrackUrl())
+export default function ResultsContainer({ searchName, searchAge, onClose }: ResultsContainerProps) {
+  const [activeSection, setActiveSection] = useState<string | null>(null) // Not currently used, but kept from original
+  const { t, currency, userLocation } = useLanguage()
 
-  useEffect(() => {
-    // Start countdown
-    const timer = setInterval(() => {
-      setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
-    }, 1000)
-
-    // Cleanup
-    return () => clearInterval(timer)
-  }, [])
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
-
-  const handlePaymentClick = () => {
+  const handleUnlockClick = () => {
     clickPayment()
   }
 
-  // Format the name to show first name and last initial
-  const formatDisplayName = (fullName: string) => {
-    const nameParts = fullName.trim().split(" ")
-    if (nameParts.length === 1) return nameParts[0]
-
-    const firstName = nameParts[0]
-    const lastInitial = nameParts[nameParts.length - 1][0] + "."
-    return `${firstName} ${lastInitial}`
+  const formatLocationText = (text: string) => {
+    return text.replace("{city}", userLocation.city)
   }
 
-  const displayName = formatDisplayName(searchName)
+  const unlockPrice = `${currency}1.99`
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 overflow-y-auto">
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl relative">
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
-            aria-label="Close results"
-          >
-            <X size={24} />
-          </button>
-
-          {/* Header */}
-          <div className="bg-red-500 text-white p-6 rounded-t-xl">
-            <h2 className="text-2xl font-bold mb-2">Search Results for "{searchName}"</h2>
-            <p className="flex items-center text-sm">
-              <MapPin size={16} className="mr-2" />
-              Showing results near {userLocation.city}
-            </p>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 md:p-4 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl my-8">
+        {/* Header */}
+        <div className="result-header p-4 md:p-6 border-b border-gray-200">
+          <div className="flex justify-between items-center mb-3">
+            <div className="flex items-center">
+              <div className="bg-red-500 h-8 w-8 md:h-10 md:w-10 rounded-full flex items-center justify-center text-white mr-3">
+                <Search size={18} />
+              </div>
+              <div>
+                <h2 className="text-lg md:text-xl font-bold text-gray-800">
+                  {t("results.title")} <span className="text-red-500">{searchName}</span>
+                </h2>
+              </div>
+            </div>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+              <X size={24} />
+            </button>
           </div>
 
-          {/* Results content */}
-          <div className="p-6">
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center">
-                  <div className="bg-green-100 text-green-600 p-2 rounded-full mr-3">
-                    <Check size={20} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">We found</h3>
-                    <p className="text-green-600 font-bold text-lg">3 strong matches & 33 potential leads</p>
-                  </div>
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-md text-sm flex items-center mb-4">
+            <AlertCircle size={18} className="mr-2 flex-shrink-0" />
+            <span>
+              {t("results.found")} <span className="font-semibold">{t("results.activeProfiles")}</span>{" "}
+              {t("results.matching")}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs md:text-sm">
+            <div className="bg-gray-50 p-2 rounded-md">
+              <p className="text-gray-500">{t("results.appsSearched")}</p>
+              <p className="font-medium text-gray-700">{t("results.platforms")}</p>
+              <div className="flex items-center text-green-600 mt-0.5">
+                <CheckCircle size={12} className="mr-1" /> {t("results.scanComplete")}
+              </div>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-md">
+              <p className="text-gray-500">{t("results.recentActivity")}</p>
+              <p className="font-medium text-gray-700">{t("results.today")}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-md">
+              <p className="text-gray-500">{t("results.locationActivity")}</p>
+              <p className="font-medium text-gray-700">{t("results.within")}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="p-4 md:p-6 space-y-6">
+          {/* Primary Match */}
+          <div className="result-card premium border border-red-200 rounded-lg p-4 bg-white">
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex items-center">
+                <div className="profile-icon bg-red-100 text-red-500 p-2 rounded-full mr-3">
+                  <User size={20} />
                 </div>
-                <div className="text-right">
-                  <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium mb-1">
-                    SCAN COMPLETE
+                <div>
+                  <h4 className="font-bold text-gray-800 text-lg">{searchName}</h4>
+                  {searchAge && ( // Display age if provided
+                    <p className="text-sm text-gray-600">{searchAge} years old</p>
+                  )}
+                  <div className="flex items-center mt-1 text-sm text-gray-500">
+                    <MapPin className="mr-1 text-red-500" size={14} />
+                    <span>
+                      {userLocation.city}, {userLocation.country}
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-600">Searched 120+ dating platforms</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-600">matching your search within the last 24 hours</p>
+              <div className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full flex items-center">
+                <AlertCircle size={12} className="mr-1" />
+                {t("results.highMatch")}
+              </div>
             </div>
 
-            {/* Profile cards */}
-            <div className="space-y-6 mb-6">
-              {/* High match profile */}
-              <div className="border rounded-lg overflow-hidden shadow-sm">
-                <div className="bg-green-50 p-3 border-b flex justify-between items-center">
-                  <div className="flex items-center">
-                    <span className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">High Match</span>
-                    <span className="text-sm text-gray-600 flex items-center">
-                      <Clock size={14} className="mr-1" /> Active 15 minutes ago
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-green-600">80% match</span>
-                </div>
-                <div className="px-4 pt-3 pb-1 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {displayName}, {searchAge}
-                  </h3>
-                </div>
+            <div className="activity-indicator online my-3 text-sm text-green-600 flex items-center">
+              <div className="activity-dot online w-2 h-2 bg-green-500 rounded-full mr-1.5"></div>
+              {t("results.active")}
+            </div>
 
-                <div className="p-4">
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="md:w-1/3">
-                      <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 relative">
-                        <img
-                          src={blurredPhotoUrl || "/blurred-profile.png"}
-                          alt="Blurred Profile"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                          <Lock size={32} className="text-white" />
-                        </div>
-                      </div>
-                      <div className="mt-2 text-center">
-                        <span className="text-xs text-gray-500 flex items-center justify-center">
-                          <Lock size={10} className="mr-1" /> Blurred for privacy
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="md:w-2/3">
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-sm bg-red-50">
-                          <img src="/tinder-icon.png" alt="Tinder" className="w-6 h-6" />
-                        </div>
-                        <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-sm bg-yellow-50">
-                          <img src="/bumble-icon.png" alt="Bumble" className="w-6 h-6" />
-                        </div>
-                        <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-sm bg-blue-50">
-                          <img src="/hinge-icon.png" alt="Hinge" className="w-6 h-6" />
-                        </div>
-                        <div className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full flex items-center">
-                          <Info size={10} className="mr-1" /> +3 other platforms
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div>
-                          <p className="text-xs text-gray-500 mb-1">Email:</p>
-                          <p className="font-medium text-gray-800 blur-sm">a****@gmail.com</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500 mb-1">Phone:</p>
-                          <p className="font-medium text-gray-800 blur-sm">+372 5** ** ***</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500 mb-1">Location:</p>
-                          <p className="font-medium text-gray-800">
-                            {userLocation.city}, {userLocation.country}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500 mb-1">Age/DOB:</p>
-                          <p className="font-medium text-gray-800 blur-sm">{searchAge} years old</p>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center text-gray-500 text-sm">
-                          <AlertCircle size={14} className="mr-1 text-amber-500" />
-                          <span>6 profile details hidden</span>
-                        </div>
-                        <a
-                          href={redTrackUrl}
-                          className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-md font-medium transition-colors"
-                          onClick={handlePaymentClick}
-                        >
-                          Unlock Full Profile ({pricing.formatted})
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+              <div>
+                <p className="text-gray-500 text-xs">{t("results.datingApps")}</p>
+                <p className="font-medium text-gray-700">{t("results.apps")}</p>
+                <p className="text-xs text-gray-400">{t("results.others")}</p>
               </div>
-
-              {/* Basic match profiles (simplified) */}
-              <div className="border rounded-lg overflow-hidden shadow-sm">
-                <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-                  <div className="flex items-center">
-                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">Match</span>
-                    <span className="text-sm text-gray-600 flex items-center">
-                      <Clock size={14} className="mr-1" /> Active yesterday
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-blue-600">65% match</span>
-                </div>
-
-                <div className="p-4 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 mr-3 relative">
-                      <img src="/dating-profile-2.png" alt="Profile" className="w-full h-full object-cover blur-sm" />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                        <Lock size={16} className="text-white" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center mb-1">
-                        <img src="/tinder-icon.png" alt="Tinder" className="w-4 h-4 mr-1" />
-                        <img src="/hinge-icon.png" alt="Hinge" className="w-4 h-4" />
-                      </div>
-                      <p className="text-xs text-gray-500">2.8 miles away</p>
-                    </div>
-                  </div>
-                  <a
-                    href={redTrackUrl}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1.5 px-3 rounded-md transition-colors"
-                    onClick={handlePaymentClick}
-                  >
-                    Unlock ({pricing.formatted})
-                  </a>
-                </div>
-              </div>
-
-              <div className="border rounded-lg overflow-hidden shadow-sm">
-                <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-                  <div className="flex items-center">
-                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">Match</span>
-                    <span className="text-sm text-gray-600 flex items-center">
-                      <Clock size={14} className="mr-1" /> Active 2 days ago
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-blue-600">55% match</span>
-                </div>
-
-                <div className="p-4 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 mr-3 relative">
-                      <img src="/dating-profile-3.png" alt="Profile" className="w-full h-full object-cover blur-sm" />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                        <Lock size={16} className="text-white" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center mb-1">
-                        <img src="/bumble-icon.png" alt="Bumble" className="w-4 h-4 mr-1" />
-                      </div>
-                      <p className="text-xs text-gray-500">5.1 miles away</p>
-                    </div>
-                  </div>
-                  <a
-                    href={redTrackUrl}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1.5 px-3 rounded-md transition-colors"
-                    onClick={handlePaymentClick}
-                  >
-                    Unlock ({pricing.formatted})
-                  </a>
+              <div>
+                <p className="text-gray-500 text-xs">{t("results.confidence")}</p>
+                <p className="font-medium text-gray-700">{t("results.match")}</p>
+                <div className="match-confidence bg-gray-200 rounded-full h-1.5 mt-1">
+                  <div className="match-confidence-bar bg-red-500 h-1.5 rounded-full" style={{ width: "80%" }}></div>
                 </div>
               </div>
             </div>
 
-            {/* Countdown and CTA */}
-            <div className="bg-amber-50 border border-amber-100 rounded-lg p-4 mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-bold text-amber-700 flex items-center">
-                  <Clock size={16} className="mr-2" />
-                  Results expire in {formatTime(countdown)}
-                </h3>
-                <div className="bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded animate-pulse">LIMITED TIME</div>
-              </div>
-              <p className="text-sm text-amber-700 mb-2">
-                7 people from {userLocation.city} are viewing these results right now
-              </p>
-            </div>
+            {/* Blurred Personal Information */}
+            <div className="personal-info-section relative border-t border-gray-200 pt-4">
+              <div className="personal-info-blur space-y-2">
+                <div className="text-xs text-gray-500">{t("results.email")}</div>
+                <div className="bg-gray-200 h-5 rounded blur-sm w-3/4"></div>
+                <div className="text-xs text-gray-500 mt-1">{t("results.phone")}</div>
+                <div className="bg-gray-200 h-5 rounded blur-sm w-1/2"></div>
+                <div className="text-xs text-gray-500 mt-1">{t("results.address")}</div>
+                <div className="bg-gray-200 h-5 rounded blur-sm w-full"></div>
+                <div className="text-xs text-gray-500 mt-1">{t("results.age")}</div>
+                <div className="bg-gray-200 h-5 rounded blur-sm w-1/3"></div>
 
-            {/* Payment CTA */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-xl font-bold mb-2 text-center">Unlock Complete Profile</h3>
-              <p className="text-sm text-gray-600 text-center mb-6">
-                One-time payment of {pricing.formatted}, lifetime access
-              </p>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="space-y-2">
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">Full Name & Age</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">Verified Contact Info</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">Home Address</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">Clear Profile Photos</span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">All Social Media Profiles</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">Dating App Activity History</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">All Dating Profile Links</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="text-green-500 mr-2 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-sm">Last Known Locations</span>
-                  </div>
+                <p className="text-xs text-gray-500 pt-2">{t("results.photos")}</p>
+                <div className="flex gap-2">
+                  <div className="w-16 h-16 bg-gray-200 rounded-md blur-sm"></div>
+                  <div className="w-16 h-16 bg-gray-200 rounded-md blur-sm"></div>
+                  <div className="w-16 h-16 bg-gray-200 rounded-md blur-sm"></div>
                 </div>
               </div>
 
-              <div className="text-center mb-6">
-                {pricing.promotional ? (
-                  <div className="mb-2">
-                    <span className="text-gray-500 text-lg line-through mr-2">
-                      {pricing.symbol}
-                      {pricing.promotional.originalPrice}
-                    </span>
-                    <span className="text-green-600 text-2xl font-bold">
-                      {pricing.symbol}
-                      {pricing.promotional.discountedPrice}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="text-green-600 text-2xl font-bold mb-2">{pricing.formatted}</div>
-                )}
-              </div>
-
-              <a
-                href={redTrackUrl}
-                className="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-center mb-4"
-                onClick={handlePaymentClick}
-              >
-                UNLOCK ALL PROFILES NOW
-              </a>
-
-              <div className="flex justify-center space-x-6">
-                <div className="flex items-center text-xs text-gray-500">
-                  <Shield className="mr-1" size={12} />
-                  <span>Secure Payment</span>
-                </div>
-                <div className="flex items-center text-xs text-gray-500">
-                  <Lock className="mr-1" size={12} />
-                  <span>Encrypted</span>
-                </div>
-                <div className="flex items-center text-xs text-gray-500">
-                  <Check className="mr-1" size={12} />
-                  <span>Lifetime Access</span>
-                </div>
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-xs flex flex-col items-center justify-center text-center p-4 rounded-b-lg">
+                <Lock size={28} className="text-red-500 mb-2" />
+                <p className="font-semibold text-gray-700 mb-1">{t("results.locked")}</p>
+                <p className="text-xs text-gray-500 mb-3">Unlock to view full details and all photos.</p>
+                <a
+                  href="https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss1"
+                  className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm font-semibold"
+                  onClick={handleUnlockClick}
+                >
+                  <Unlock size={16} />
+                  {t("results.unlock", { price: unlockPrice })}
+                </a>
               </div>
             </div>
+          </div>
+
+          {/* Unlock Panel */}
+          <div id="payment-section" className="unlock-panel bg-gray-50 p-4 md:p-6 rounded-lg text-center">
+            <div className="flex justify-center mb-3">
+              <div className="bg-red-100 h-12 w-12 rounded-full flex items-center justify-center text-red-500">
+                <Lock size={24} />
+              </div>
+            </div>
+            <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-1">{t("results.accessDetails")}</h3>
+            <p className="text-gray-600 text-sm mb-4">{t("results.oneTime")}</p>
+
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-left text-sm text-gray-700 mb-4 max-w-xs mx-auto">
+              {[
+                t("results.feature1"),
+                t("results.feature2"),
+                t("results.feature3"),
+                t("results.feature4"),
+                t("results.feature5"),
+                t("results.feature6"),
+                t("results.feature7"),
+                t("results.feature8"),
+              ].map((feature, index) => (
+                <div key={index} className="flex items-center">
+                  <CheckCircle className="text-red-500 mr-1.5 flex-shrink-0" size={14} />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-3xl md:text-4xl font-extrabold text-red-500 my-3">{unlockPrice}</div>
+
+            <a
+              href="https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss1"
+              className="unlock-cta flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg w-full max-w-xs mx-auto text-base"
+              onClick={handleUnlockClick}
+            >
+              <Unlock size={18} />
+              {t("results.unlock", { price: unlockPrice })}
+            </a>
+
+            <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-gray-500 mt-4">
+              <div className="flex items-center">
+                <Lock size={12} className="mr-1" />
+                {t("results.securePayment")}
+              </div>
+              <div className="flex items-center">
+                <Shield size={12} className="mr-1" />
+                {t("results.encrypted")}
+              </div>
+              <div className="flex items-center">
+                <Clock size={12} className="mr-1" />
+                {t("results.lifetimeAccess")}
+              </div>
+            </div>
+
+            <div className="text-xs text-red-600 mt-3 flex items-center justify-center">
+              <Clock size={12} className="mr-1" />
+              {t("results.countdown")}
+            </div>
+          </div>
+
+          <div className="users-viewing text-xs text-gray-500 text-center mt-4 flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5 animate-pulse"></div>
+            <span>{formatLocationText(t("results.viewing", { count: Math.floor(Math.random() * 5) + 5 }))}</span>
           </div>
         </div>
       </div>

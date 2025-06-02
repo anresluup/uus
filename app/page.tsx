@@ -1,11 +1,9 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 import Header from "@/components/header"
 import HeroSection from "@/components/hero-section"
 import FeaturedSection from "@/components/featured-section"
-import VideoSection from "@/components/video-section"
 import HowItWorksSection from "@/components/how-it-works-section"
 import PrivacySection from "@/components/privacy-section"
 import TrustSection from "@/components/trust-section"
@@ -16,108 +14,37 @@ import CtaSection from "@/components/cta-section"
 import Footer from "@/components/footer"
 import ScanOverlay from "@/components/scan-overlay"
 import ResultsContainer from "@/components/results-container"
-import PurchasePopup from "@/components/purchase-popup"
-import { startScan } from "@/lib/analytics"
-import { checkUserSearchStatus, recordSearch } from "@/lib/user-tracking"
+import { startScan as trackStartScanAnalytics } from "@/lib/analytics" // Renamed for clarity
 
 export default function Home() {
   const [showScanOverlay, setShowScanOverlay] = useState(false)
   const [showResults, setShowResults] = useState(false)
-  const [showPurchasePopup, setShowPurchasePopup] = useState(false)
-  const [searchName, setSearchName] = useState("Andrus Kukks")
-  const [searchAge, setSearchAge] = useState("28")
-  const [searchSex, setSearchSex] = useState("male")
-  const [searchLocation, setSearchLocation] = useState("")
-  const [searchPhone, setSearchPhone] = useState("")
-  const [searchEmail, setSearchEmail] = useState("")
-  const [searchFullName, setSearchFullName] = useState("")
+  const [searchName, setSearchName] = useState("Tarvo Suur") // Default or from previous state
+  const [searchAge, setSearchAge] = useState("") // New state for age
   const [photoFile, setPhotoFile] = useState<File | null>(null)
-  const [blurredPhotoUrl, setBlurredPhotoUrl] = useState<string | null>(null)
-  const [hasSearchedBefore, setHasSearchedBefore] = useState(false)
-  const router = useRouter()
-  const pricingSectionRef = useRef<HTMLDivElement>(null)
 
-  // Check if user has searched before
-  useEffect(() => {
-    const checkSearchStatus = async () => {
-      const hasSearched = await checkUserSearchStatus()
-      setHasSearchedBefore(hasSearched)
-    }
-
-    checkSearchStatus()
-  }, [])
-
-  const scrollToPricing = () => {
-    if (pricingSectionRef.current) {
-      pricingSectionRef.current.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
-  const handleStartScan = async (
-    name?: string,
-    age?: string,
-    sex?: string,
-    location?: string,
-    phone?: string,
-    email?: string,
-    fullName?: string,
-  ) => {
-    // Check if user has searched before
-    const hasSearched = await checkUserSearchStatus()
-
-    // If they've searched before, show purchase popup instead of starting scan
-    if (hasSearched) {
-      setShowPurchasePopup(true)
-      return
-    }
-
+  const handleStartScan = (name?: string, age?: string) => {
+    // Added age parameter
     if (name) {
       setSearchName(name)
     }
     if (age) {
       setSearchAge(age)
     }
-    if (sex) {
-      setSearchSex(sex)
-    }
-    if (location) {
-      setSearchLocation(location)
-    }
-    if (phone) {
-      setSearchPhone(phone)
-    }
-    if (email) {
-      setSearchEmail(email)
-    }
-    if (fullName) {
-      setSearchFullName(fullName)
-    }
-
     setShowScanOverlay(true)
 
-    // Track the start scan event
-    startScan()
+    trackStartScanAnalytics()
 
-    // Record that user has searched
-    await recordSearch()
-    setHasSearchedBefore(true)
-
-    // Simulate scan completion after 20 seconds (longer animation)
     setTimeout(() => {
       setShowScanOverlay(false)
       setShowResults(true)
-    }, 20000)
+    }, 5000)
   }
 
-  const handlePhotoUpload = async (file: File, blurredDataUrl?: string) => {
-    // Just store the photo and blurred URL, don't start the scan
+  const handlePhotoUpload = (file: File) => {
     setPhotoFile(file)
-    if (blurredDataUrl) {
-      setBlurredPhotoUrl(blurredDataUrl)
-    }
-
-    // Don't start the scan or show results automatically
-    // The scan will only start when the user clicks the "Start Scanning" button
+    // Optionally, you could trigger a scan immediately after photo upload
+    // For now, it just sets the file, scan is triggered by button
   }
 
   const handleCancelScan = () => {
@@ -128,52 +55,34 @@ export default function Home() {
     setShowResults(false)
   }
 
-  const handleClosePurchasePopup = () => {
-    setShowPurchasePopup(false)
-  }
-
   return (
     <main>
-      <Header onScanNowClick={() => handleStartScan()} />
+      <Header onScanNowClick={() => handleStartScan(searchName, searchAge)} /> {/* Pass current name/age */}
       <HeroSection onStartScan={handleStartScan} onPhotoUpload={handlePhotoUpload} />
       <FeaturedSection />
-      <VideoSection />
       <HowItWorksSection />
       <PrivacySection />
       <TrustSection />
-      <div ref={pricingSectionRef}>
-        <PricingSection />
-      </div>
+      <PricingSection />
       <TestimonialsSection />
       <FaqSection />
-      <CtaSection onStartScan={() => handleStartScan()} />
+      <CtaSection onStartScan={() => handleStartScan(searchName, searchAge)} /> {/* Pass current name/age */}
       <Footer />
-
       {showScanOverlay && (
         <ScanOverlay
           searchName={searchName}
-          searchAge={searchAge}
-          searchSex={searchSex}
-          searchLocation={searchLocation}
-          searchPhone={searchPhone}
-          searchEmail={searchEmail}
-          searchFullName={searchFullName}
+          searchAge={searchAge} // Pass age
           onCancel={handleCancelScan}
           hasPhoto={!!photoFile}
         />
       )}
-
       {showResults && (
         <ResultsContainer
           searchName={searchName}
-          searchAge={searchAge}
+          searchAge={searchAge} // Pass age
           onClose={handleCloseResults}
-          hasPhoto={!!photoFile}
-          blurredPhotoUrl={blurredPhotoUrl}
         />
       )}
-
-      {showPurchasePopup && <PurchasePopup onClose={handleClosePurchasePopup} />}
     </main>
   )
 }
