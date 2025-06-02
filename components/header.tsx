@@ -16,7 +16,7 @@ export default function Header({ onScanNowClick }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
-      <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
+      <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center">
           <span className="text-xl font-bold text-gray-800">
             Cheater<span className="text-red-500">Scanner</span>
@@ -25,16 +25,16 @@ export default function Header({ onScanNowClick }: HeaderProps) {
 
         <div className="hidden md:flex items-center space-x-8">
           <Link href="#how-it-works" className="text-gray-700 hover:text-red-500 transition-colors duration-300">
-            How It Works
+            {t("nav.howItWorks")}
           </Link>
           <Link href="#pricing" className="text-gray-700 hover:text-red-500 transition-colors duration-300">
-            Pricing
+            {t("nav.pricing")}
           </Link>
           <Link href="#faq" className="text-gray-700 hover:text-red-500 transition-colors duration-300">
-            FAQ
+            {t("nav.faq")}
           </Link>
           <Link href="#" className="text-gray-700 hover:text-red-500 transition-colors duration-300">
-            Login
+            {t("nav.login")}
           </Link>
         </div>
 
@@ -43,52 +43,48 @@ export default function Header({ onScanNowClick }: HeaderProps) {
             onClick={onScanNowClick}
             className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg"
           >
-            Scan Now
+            {t("nav.scanNow")}
           </Button>
 
-          <div className="md:hidden ml-2">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-700 focus:outline-none p-2"
-              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            >
+          <div className="md:hidden ml-4">
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-gray-700 focus:outline-none">
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile menu with improved styling */}
+      {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white py-4 px-6 shadow-lg absolute w-full z-50">
-          <div className="flex flex-col space-y-5">
+        <div className="md:hidden bg-white py-4 px-6 shadow-lg">
+          <div className="flex flex-col space-y-4">
             <Link
               href="#how-it-works"
               className="text-gray-700 hover:text-red-500 transition-colors duration-300"
               onClick={() => setMobileMenuOpen(false)}
             >
-              How It Works
+              {t("nav.howItWorks")}
             </Link>
             <Link
               href="#pricing"
               className="text-gray-700 hover:text-red-500 transition-colors duration-300"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Pricing
+              {t("nav.pricing")}
             </Link>
             <Link
               href="#faq"
               className="text-gray-700 hover:text-red-500 transition-colors duration-300"
               onClick={() => setMobileMenuOpen(false)}
             >
-              FAQ
+              {t("nav.faq")}
             </Link>
             <Link
               href="#"
               className="text-gray-700 hover:text-red-500 transition-colors duration-300"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Login
+              {t("nav.login")}
             </Link>
           </div>
         </div>

@@ -21,6 +21,7 @@ export const translations: Translations = {
     "hero.subtitle":
       "Instantly scan dating apps to discover if your partner is active on Tinder, Bumble, Hinge & more. Get peace of mind with our secure, discreet service.",
     "hero.inputPlaceholder": "Enter their name...",
+    "hero.agePlaceholder": "Enter their age...",
     "hero.startScan": "Start Scan",
     "hero.secure.label": "Secure",
     "hero.encrypted.label": "Encrypted",
@@ -104,7 +105,7 @@ export const translations: Translations = {
     "pricing.title": "Simple, One-time Payment",
     "pricing.bestValue": "BEST VALUE",
     "pricing.lifetime": "Lifetime Access",
-    "pricing.price": "£2",
+    "pricing.price": "€1.99", // Updated
     "pricing.subtitle": "One-time payment, unlimited access",
     "pricing.feature1": "Full dating profile details",
     "pricing.feature2": "Complete contact information",
@@ -121,6 +122,7 @@ export const translations: Translations = {
 
     // Results Container
     "results.title": "Search Results for",
+    "results.ageLabel": "Age:",
     "results.location": "Showing results near",
     "results.found": "We found",
     "results.activeProfiles": "3 active profiles",
@@ -145,7 +147,7 @@ export const translations: Translations = {
     "results.age": "Age/DOB:",
     "results.photos": "Profile Photos:",
     "results.locked": "Full profile details locked",
-    "results.unlock": "Unlock for £2",
+    "results.unlock": "Unlock for €1.99", // Updated
     "results.viewDetails": "View Details",
     "results.basicReport": "Basic Report",
     "results.basicMatch": "Basic Match",
@@ -195,6 +197,7 @@ export const translations: Translations = {
     // Scan Section
     "scan.scanning": "Scanning Dating Apps",
     "scan.searching": "Searching for profiles matching",
+    "scan.searchingWithAge": "Searching for profiles matching", // Example: "Searching for profiles matching John Doe (Age: 30)"
     "scan.sites": "dating sites being scanned",
     "scan.profilesChecked": "Profiles checked:",
     "scan.cancel": "Cancel Scan",
@@ -237,6 +240,7 @@ export const translations: Translations = {
     "hero.subtitle":
       "Analysez instantanément les applications de rencontres pour découvrir si votre partenaire est actif sur Tinder, Bumble, Hinge et plus. Obtenez la tranquillité d'esprit avec notre service discret et sécurisé.",
     "hero.inputPlaceholder": "Entrez leur nom...",
+    "hero.agePlaceholder": "Entrez leur âge...",
     "hero.startScan": "Commencer l'analyse",
     "hero.secure.label": "Sécurisé",
     "hero.encrypted.label": "Crypté",
@@ -327,7 +331,7 @@ export const translations: Translations = {
     "pricing.title": "Paiement unique simple",
     "pricing.bestValue": "MEILLEURE VALEUR",
     "pricing.lifetime": "Accès à vie",
-    "pricing.price": "€2",
+    "pricing.price": "€1.99", // Updated
     "pricing.subtitle": "Paiement unique, accès illimité",
     "pricing.feature1": "Détails complets du profil de rencontres",
     "pricing.feature2": "Informations de contact complètes",
@@ -344,6 +348,7 @@ export const translations: Translations = {
 
     // Results Container
     "results.title": "Résultats de recherche pour",
+    "results.ageLabel": "Âge:",
     "results.location": "Affichage des résultats près de",
     "results.found": "Nous avons trouvé",
     "results.activeProfiles": "3 profils actifs",
@@ -368,7 +373,7 @@ export const translations: Translations = {
     "results.age": "Âge/Date de naissance :",
     "results.photos": "Photos de profil :",
     "results.locked": "Détails complets du profil verrouillés",
-    "results.unlock": "Débloquer pour €2",
+    "results.unlock": "Débloquer pour €1.99", // Updated
     "results.viewDetails": "Voir les détails",
     "results.basicReport": "Rapport de base",
     "results.basicMatch": "Correspondance basique",
@@ -419,6 +424,7 @@ export const translations: Translations = {
     // Scan Section
     "scan.scanning": "Analyse des applications de rencontres",
     "scan.searching": "Recherche de profils correspondant à",
+    "scan.searchingWithAge": "Recherche de profils correspondant à",
     "scan.sites": "sites de rencontres analysés",
     "scan.profilesChecked": "Profils vérifiés :",
     "scan.cancel": "Annuler l'analyse",

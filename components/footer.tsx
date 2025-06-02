@@ -1,12 +1,7 @@
-"use client"
-
 import Link from "next/link"
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
-import { useLanguage } from "@/contexts/language-context"
 
 export default function Footer() {
-  const { t } = useLanguage()
-
   return (
     <footer className="py-12 bg-gray-800 text-gray-300">
       <div className="container mx-auto px-6">
@@ -18,27 +13,27 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="font-bold mb-4 text-white">Company</h4>
+              <h4 className="font-bold mb-4">Company</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="#about" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="#how-it-works" className="hover:text-white transition-colors">
+                  <Link href="#how-it-works" className="hover:text-white">
                     How It Works
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy" className="hover:text-white transition-colors">
+                  <Link href="/privacy-policy" className="hover:text-white">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms-of-service" className="hover:text-white transition-colors">
+                  <Link href="/terms-of-service" className="hover:text-white">
                     Terms of Service
                   </Link>
                 </li>
@@ -46,25 +41,25 @@ export default function Footer() {
             </div>
 
             <div>
-              <h4 className="font-bold mb-4 text-white">Support</h4>
+              <h4 className="font-bold mb-4">Support</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/contact-us" className="hover:text-white transition-colors">
+                  <Link href="/contact-us" className="hover:text-white">
                     Contact Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="#faq" className="hover:text-white transition-colors">
+                  <Link href="#faq" className="hover:text-white">
                     FAQ
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact-us" className="hover:text-white transition-colors">
+                  <Link href="/contact-us" className="hover:text-white">
                     Help Center
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact-us" className="hover:text-white transition-colors">
+                  <Link href="/contact-us" className="hover:text-white">
                     Report Issues
                   </Link>
                 </li>
@@ -72,25 +67,25 @@ export default function Footer() {
             </div>
 
             <div>
-              <h4 className="font-bold mb-4 text-white">Legal</h4>
+              <h4 className="font-bold mb-4">Legal</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/privacy-policy" className="hover:text-white transition-colors">
+                  <Link href="/privacy-policy" className="hover:text-white">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms-of-service" className="hover:text-white transition-colors">
+                  <Link href="/terms-of-service" className="hover:text-white">
                     Terms & Conditions
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy#cookies" className="hover:text-white transition-colors">
+                  <Link href="/privacy-policy#cookies" className="hover:text-white">
                     Cookie Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy#gdpr" className="hover:text-white transition-colors">
+                  <Link href="/privacy-policy#gdpr" className="hover:text-white">
                     GDPR Compliance
                   </Link>
                 </li>
@@ -99,32 +94,21 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 pt-6 mt-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
-            <p className="text-sm mb-4 sm:mb-0">© {new Date().getFullYear()} CheatScanner. All rights reserved.</p>
-            <div className="flex space-x-6">
-              <Link href="#" className="hover:text-white transition-colors" aria-label="Facebook">
-                <Facebook size={18} />
-              </Link>
-              <Link href="#" className="hover:text-white transition-colors" aria-label="Twitter">
-                <Twitter size={18} />
-              </Link>
-              <Link href="#" className="hover:text-white transition-colors" aria-label="Instagram">
-                <Instagram size={18} />
-              </Link>
-              <Link href="#" className="hover:text-white transition-colors" aria-label="LinkedIn">
-                <Linkedin size={18} />
-              </Link>
-            </div>
-          </div>
-
-          <div className="text-center mt-4">
-            <p className="text-sm text-gray-400">
-              Contact us:{" "}
-              <a href="mailto:support@cheatscanner.com" className="text-blue-400 hover:text-blue-300">
-                support@cheatscanner.com
-              </a>
-            </p>
+        <div className="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row items-center justify-between">
+          <p className="text-sm mb-4 md:mb-0">© {new Date().getFullYear()} CheatScanner. All rights reserved.</p>
+          <div className="flex space-x-6">
+            <Link href="#" className="hover:text-white">
+              <Facebook size={18} />
+            </Link>
+            <Link href="#" className="hover:text-white">
+              <Twitter size={18} />
+            </Link>
+            <Link href="#" className="hover:text-white">
+              <Instagram size={18} />
+            </Link>
+            <Link href="#" className="hover:text-white">
+              <Linkedin size={18} />
+            </Link>
           </div>
         </div>
       </div>

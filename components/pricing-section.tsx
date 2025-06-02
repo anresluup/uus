@@ -1,26 +1,11 @@
 "use client"
 
-import { Check, Lock, Shield, AlertTriangle } from "lucide-react"
+import { Check, Lock, Shield } from "lucide-react"
 import { clickPayment } from "@/lib/analytics"
 import { useLanguage } from "@/contexts/language-context"
-import { useState, useEffect } from "react"
 
 export default function PricingSection() {
-  const { pricing } = useLanguage()
-  const [countdown, setCountdown] = useState(600)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
+  const { t, currency } = useLanguage()
 
   const handlePaymentClick = () => {
     // Track the payment click event
@@ -28,80 +13,58 @@ export default function PricingSection() {
   }
 
   return (
-    <section id="pricing" className="py-12 md:py-16 bg-white">
-      <div className="container mx-auto px-4 md:px-6 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold mb-8 md:mb-12">Simple, One-time Payment</h2>
+    <section id="pricing" className="py-16 bg-white">
+      <div className="container mx-auto px-6 text-center">
+        <h2 className="text-3xl font-bold mb-12">{t("pricing.title")}</h2>
 
-        <div className="max-w-sm mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="p-6 md:p-8">
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="p-8">
             <div className="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full inline-block mb-4">
-              BEST VALUE
+              {t("pricing.bestValue")}
             </div>
-            <h3 className="text-xl md:text-2xl font-bold mb-2">Lifetime Access</h3>
-            <div className="text-center mb-4">
-              {pricing.promotional ? (
-                <>
-                  <div className="bg-yellow-400 text-black text-xs md:text-sm font-bold px-3 py-1 rounded-full inline-block mb-2 animate-pulse">
-                    {pricing.promotional.discountPercentage}% OFF - LIMITED TIME!
-                  </div>
-                  <div className="text-xl md:text-2xl text-gray-500 line-through">
-                    {pricing.symbol}
-                    {pricing.promotional.originalPrice}
-                  </div>
-                  <div className="text-4xl md:text-5xl font-black text-red-500">
-                    {pricing.symbol}
-                    {pricing.promotional.discountedPrice}
-                  </div>
-                </>
-              ) : (
-                <div className="text-4xl md:text-5xl font-black text-red-500">{pricing.formatted}</div>
-              )}
-              <div className="text-red-600 font-bold mt-2 flex items-center justify-center text-sm">
-                <AlertTriangle size={16} className="mr-1" />
-                Offer expires in: {formatTime(countdown)}
-              </div>
-            </div>
-            <p className="text-gray-500 mb-6 text-sm md:text-base">One-time payment, unlimited access</p>
+            <h3 className="text-2xl font-bold mb-2">{t("pricing.lifetime")}</h3>
+            <div className="text-4xl font-bold text-red-500 mb-4">{t("pricing.price")}</div>
+            <p className="text-gray-500 mb-6">{t("pricing.subtitle")}</p>
 
-            <ul className="text-left space-y-3 mb-8 text-sm md:text-base">
-              <li className="flex items-start">
-                <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
-                <span>Full dating profile details</span>
+            <ul className="text-left space-y-3 mb-8">
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature1")}</span>
               </li>
-              <li className="flex items-start">
-                <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
-                <span>Complete contact information</span>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature2")}</span>
               </li>
-              <li className="flex items-start">
-                <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
-                <span>Location history and activity</span>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature3")}</span>
               </li>
-              <li className="flex items-start">
-                <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
-                <span>All social media profiles</span>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature4")}</span>
               </li>
-              <li className="flex items-start">
-                <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
-                <span>Downloadable PDF report</span>
+              <li className="flex items-center">
+                <Check className="text-green-500 mr-3" size={18} />
+                <span>{t("pricing.feature5")}</span>
               </li>
             </ul>
 
             <a
-              href="https://gmlkd.ttrk.io/click"
-              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-black py-4 px-6 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center text-base md:text-lg transform hover:scale-105"
+              href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md flex items-center justify-center"
               onClick={handlePaymentClick}
             >
-              UNLOCK EVERYTHING NOW →
+              {t("pricing.cta")}
             </a>
 
             <div className="flex justify-center space-x-4 mt-6">
               <div className="flex items-center text-xs text-gray-500">
                 <Lock className="mr-1" size={12} />
-                <span>Secure Payment</span>
+                <span>{t("pricing.secure")}</span>
               </div>
               <div className="flex items-center text-xs text-gray-500">
                 <Shield className="mr-1" size={12} />
-                <span>100% Discreet</span>
+                <span>{t("pricing.discreet")}</span>
               </div>
             </div>
 
@@ -112,35 +75,35 @@ export default function PricingSection() {
                   <img
                     src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/trustpilot-p20zNrYMsLNW1ZssHjLiw2Xj8PZPwS.webp"
                     alt="Trustpilot Excellent 4.5 stars"
-                    className="h-12 md:h-14"
+                    className="h-14"
                   />
                 </div>
-                <p className="text-xs md:text-sm text-gray-500 mb-4">Trusted by thousands of users worldwide</p>
-                <div className="flex flex-wrap justify-center gap-2 mt-2">
-                  <div className="bg-gray-50 border border-gray-100 rounded-md px-2 py-1.5 md:px-3 md:py-2 flex items-center">
-                    <Shield className="text-gray-500 mr-1 md:mr-2" size={14} />
-                    <span className="text-xs font-medium">SSL Secure</span>
+                <p className="text-sm text-gray-500 mb-4">{t("pricing.trusted")}</p>
+                <div className="flex flex-wrap justify-center gap-3 mt-2">
+                  <div className="bg-gray-50 border border-gray-100 rounded-md px-3 py-2 flex items-center">
+                    <Shield className="text-gray-500 mr-2" size={16} />
+                    <span className="text-xs font-medium">{t("pricing.ssl")}</span>
                   </div>
-                  <div className="bg-gray-50 border border-gray-100 rounded-md px-2 py-1.5 md:px-3 md:py-2 flex items-center">
-                    <Lock className="text-gray-500 mr-1 md:mr-2" size={14} />
-                    <span className="text-xs font-medium">256-bit Encryption</span>
+                  <div className="bg-gray-50 border border-gray-100 rounded-md px-3 py-2 flex items-center">
+                    <Lock className="text-gray-500 mr-2" size={16} />
+                    <span className="text-xs font-medium">{t("pricing.encryption")}</span>
                   </div>
-                  <div className="bg-gray-50 border border-gray-100 rounded-md px-2 py-1.5 md:px-3 md:py-2 flex items-center">
+                  <div className="bg-gray-50 border border-gray-100 rounded-md px-3 py-2 flex items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-gray-500 mr-1 md:mr-2"
+                      className="text-gray-500 mr-2"
                     >
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
-                    <span className="text-xs font-medium">GDPR Compliant</span>
+                    <span className="text-xs font-medium">{t("pricing.gdpr")}</span>
                   </div>
                 </div>
               </div>
