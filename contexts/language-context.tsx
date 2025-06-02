@@ -74,6 +74,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
           setLocale("tr")
           setCurrency("TRY")
         } else if (locationData.country_code === "NZ") {
+          setCurrency("NZD")
           setPaymentLink("https://www.craftybyte42.com/22B69BC/2K4J4XG5/?sub1=nz-tn-1")
         } else if (locationData.country_code === "TR") {
           setLocale("tr")
@@ -89,6 +90,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const t = (key: string): string => {
+    // Handle New Zealand specific pricing
+    if (currency === "NZD") {
+      if (key === "pricing.price") return "$4 NZD"
+      if (key === "results.unlock") return "Unlock for $4 NZD"
+    }
+
     return translations[locale][key] || key
   }
 
