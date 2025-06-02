@@ -73,6 +73,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         } else if (locationData.country_code === "TR") {
           setLocale("tr")
           setCurrency("TRY")
+        } else if (locationData.country_code === "NZ") {
+          setPaymentLink("https://www.craftybyte42.com/22B69BC/2K4J4XG5/?sub1=nz-tn-1")
+        } else if (locationData.country_code === "TR") {
+          setLocale("tr")
+          setCurrency("TRY")
+          setPaymentLink("https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2")
         }
       } catch (error) {
         console.error("Error detecting country:", error)
