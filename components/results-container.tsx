@@ -204,7 +204,7 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
               <a
                 href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
                 className="mt-2 bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm"
-                onClick={handleUnlockClick}
+                // onClick={handleUnlockClick} // Temporarily removed
               >
                 <Unlock size={16} />
                 {t("results.unlock")}

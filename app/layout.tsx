@@ -4,10 +4,6 @@ import { Poppins } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/contexts/language-context"
-import FacebookPixel from "@/components/facebook-pixel"
-import GoogleAnalytics from "@/components/google-analytics"
-import Hotjar from "@/components/hotjar"
-import { Suspense } from "react"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -33,11 +29,11 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <LanguageProvider>{children}</LanguageProvider>
         </ThemeProvider>
-        <Suspense fallback={null}>
-          <FacebookPixel />
-          <GoogleAnalytics />
-          <Hotjar />
-        </Suspense>
+        {/* <Suspense fallback={null}> */}
+        {/*   <FacebookPixel /> */}
+        {/*   <GoogleAnalytics /> */}
+        {/*   <Hotjar /> */}
+        {/* </Suspense> */}
       </body>
     </html>
   )

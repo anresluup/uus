@@ -35,8 +35,9 @@ export const startScan = () => {
 
 // Track payment CTA clicks
 export const clickPayment = () => {
+  console.log("Payment button clicked")
+  // Facebook Pixel
   if (typeof window !== "undefined") {
-    // Facebook Pixel
     if (window.fbq) {
       window.fbq("track", "InitiateCheckout")
       console.log("FB Pixel: InitiateCheckout event tracked")
