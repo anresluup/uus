@@ -149,7 +149,12 @@ export default function HeroSection({ onStartScan, onPhotoUpload }: HeroSectionP
               </div>
 
               <div className="flex justify-between mt-4">
-                <Button variant="outline" className="text-sm">
+                <Button
+                  variant="outline"
+                  className="text-sm"
+                  onClick={() => onStartScan(nameInput || undefined, ageInput || undefined)}
+                >
+                  {/* Keep the SVG icon as is */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 mr-1"
@@ -165,7 +170,11 @@ export default function HeroSection({ onStartScan, onPhotoUpload }: HeroSectionP
                   </svg>
                   {t("hero.viewDetails")}
                 </Button>
-                <Button className="bg-red-500 hover:bg-red-600 text-white text-sm">
+                <Button
+                  className="bg-red-500 hover:bg-red-600 text-white text-sm"
+                  onClick={() => onStartScan(nameInput || undefined, ageInput || undefined)}
+                >
+                  {/* Keep the SVG icon as is */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 mr-1"

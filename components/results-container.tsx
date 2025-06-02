@@ -56,6 +56,13 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
     return `${ageNum + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3)} years old`
   }
 
+  const scrollToPayment = () => {
+    const paymentSection = document.getElementById("payment-section")
+    if (paymentSection) {
+      paymentSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   return (
     <div className="results-container">
       <div className="results-content">
@@ -206,7 +213,7 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
           </div>
 
           <div className="mt-4 flex justify-between">
-            <Button variant="outline" onClick={() => setActiveSection("payment")} className="text-sm">
+            <Button variant="outline" onClick={scrollToPayment} className="text-sm">
               <Eye className="mr-1" size={16} /> {t("results.viewDetails")}
             </Button>
             <Button className="bg-blue-500 hover:bg-blue-600 text-white text-sm">
@@ -311,7 +318,7 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
           </div>
 
           <div className="mt-4 flex justify-between">
-            <Button variant="outline" onClick={() => setActiveSection("payment")} className="text-sm">
+            <Button variant="outline" onClick={scrollToPayment} className="text-sm">
               <Eye className="mr-1" size={16} /> {t("results.viewDetails")}
             </Button>
             <Button className="bg-blue-500 hover:bg-blue-600 text-white text-sm">
