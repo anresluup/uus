@@ -50,7 +50,7 @@ export default function PricingSection() {
             </ul>
 
             <a
-              href="https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=1tst"
+              href="https://www.google.com"
               className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md flex items-center justify-center"
               onClick={handlePaymentClick}
               // Removed target="_blank" and rel="noopener noreferrer" if you prefer to revert that
