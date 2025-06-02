@@ -22,8 +22,8 @@ const defaultLanguageContext: LanguageContextType = {
   setLocale: () => {},
   userLocation: {
     city: "your city",
-    country: "your country"
-  }
+    country: "your country",
+  },
 }
 
 const LanguageContext = createContext<LanguageContextType>(defaultLanguageContext)
@@ -35,7 +35,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [currency, setCurrency] = useState("£")
   const [userLocation, setUserLocation] = useState({
     city: "your city",
-    country: "your country"
+    country: "your country",
   })
 
   useEffect(() => {
@@ -47,19 +47,25 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         if (browserLang === "fr") {
           setLocale("fr")
           setCurrency("€")
+        } else if (browserLang === "tr") {
+          setLocale("tr")
+          setCurrency("TRY")
         }
 
         // Get user location
         const locationData = await getUserLocation()
         setUserLocation({
           city: locationData.city,
-          country: locationData.country
+          country: locationData.country,
         })
 
         // If location detection worked, use that for language
         if (locationData.country_code === "FR") {
           setLocale("fr")
           setCurrency("€")
+        } else if (locationData.country_code === "TR") {
+          setLocale("tr")
+          setCurrency("TRY")
         }
       } catch (error) {
         console.error("Error detecting country:", error)

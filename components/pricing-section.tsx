@@ -50,10 +50,9 @@ export default function PricingSection() {
             </ul>
 
             <a
-              href="https://www.google.com"
+              href="https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2"
               className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md flex items-center justify-center"
               onClick={handlePaymentClick}
-              // Removed target="_blank" and rel="noopener noreferrer" if you prefer to revert that
             >
               {t("pricing.cta")}
             </a>
