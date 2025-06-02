@@ -29,7 +29,7 @@ interface ResultsContainerProps {
 
 export default function ResultsContainer({ searchName, searchAge, onClose, hasPhoto }: ResultsContainerProps) {
   const [activeSection, setActiveSection] = useState<string | null>(null)
-  const { t, currency, userLocation } = useLanguage()
+  const { t, currency, paymentLink, userLocation } = useLanguage()
 
   const handleUnlockClick = () => {
     clickPayment()
@@ -198,7 +198,7 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
               <Lock size={24} />
               <div className="personal-info-lock-text">{t("results.locked")}</div>
               <a
-                href="https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2"
+                href={paymentLink}
                 className="mt-2 bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm"
                 onClick={handleUnlockClick}
               >
@@ -303,7 +303,7 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
               <Lock size={24} />
               <div className="personal-info-lock-text">{t("results.locked")}</div>
               <a
-                href="https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2"
+                href={paymentLink}
                 className="mt-2 bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm"
                 onClick={handleUnlockClick}
               >
@@ -373,7 +373,7 @@ export default function ResultsContainer({ searchName, searchAge, onClose, hasPh
           </div>
 
           <a
-            href="https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2"
+            href={paymentLink}
             className="unlock-cta flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg w-full max-w-[280px] mx-auto"
             onClick={handleUnlockClick}
           >

@@ -8,6 +8,7 @@ type LanguageContextType = {
   locale: Locale
   t: (key: string) => string
   currency: string
+  paymentLink: string
   setLocale: (locale: Locale) => void
   userLocation: {
     city: string
@@ -19,6 +20,7 @@ const defaultLanguageContext: LanguageContextType = {
   locale: "en",
   t: (key: string) => key,
   currency: "£",
+  paymentLink: "https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2",
   setLocale: () => {},
   userLocation: {
     city: "your city",
@@ -33,6 +35,9 @@ export const useLanguage = () => useContext(LanguageContext)
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useState<Locale>("en")
   const [currency, setCurrency] = useState("£")
+  const [paymentLink, setPaymentLink] = useState(
+    "https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2",
+  )
   const [userLocation, setUserLocation] = useState({
     city: "your city",
     country: "your country",
@@ -47,6 +52,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         if (browserLang === "fr") {
           setLocale("fr")
           setCurrency("€")
+          setPaymentLink("https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=tind1")
         } else if (browserLang === "tr") {
           setLocale("tr")
           setCurrency("TRY")
@@ -63,6 +69,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         if (locationData.country_code === "FR") {
           setLocale("fr")
           setCurrency("€")
+          setPaymentLink("https://www.craftybyte42.com/22B69BC/2G6JLLWJ/?sub1=tind1")
         } else if (locationData.country_code === "TR") {
           setLocale("tr")
           setCurrency("TRY")
@@ -80,7 +87,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <LanguageContext.Provider value={{ locale, t, currency, setLocale, userLocation }}>
+    <LanguageContext.Provider value={{ locale, t, currency, paymentLink, setLocale, userLocation }}>
       {children}
     </LanguageContext.Provider>
   )

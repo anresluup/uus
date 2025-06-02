@@ -659,7 +659,7 @@ export const translations: Translations = {
 
     // Upload
     "upload.dragDrop": "Buraya bir fotoğraf sürükleyip bırakın",
-    "upload.orClickToUpload": "veya yüklemek için tıklayın",
+    "scan.orClickToUpload": "veya yüklemek için tıklayın",
     "upload.selectPhoto": "Fotoğraf Seç",
     "upload.maxFileSize": "Maksimum dosya boyutu: 5MB",
     "upload.invalidFileType": "Geçersiz dosya türü. Lütfen bir resim yükleyin.",

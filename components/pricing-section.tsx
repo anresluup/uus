@@ -5,7 +5,7 @@ import { clickPayment } from "@/lib/analytics"
 import { useLanguage } from "@/contexts/language-context"
 
 export default function PricingSection() {
-  const { t, currency } = useLanguage()
+  const { t, currency, paymentLink } = useLanguage()
 
   const handlePaymentClick = () => {
     // Track the payment click event
@@ -50,7 +50,7 @@ export default function PricingSection() {
             </ul>
 
             <a
-              href="https://tmpc.trackmyprizecard.com/aff_c?offer_id=89361&aff_id=2049&aff_sub=ss2"
+              href={paymentLink}
               className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md flex items-center justify-center"
               onClick={handlePaymentClick}
             >
