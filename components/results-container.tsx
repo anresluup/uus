@@ -1,464 +1,421 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useLanguage } from "@/contexts/language-context"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import {
+  Search,
+  MapPin,
+  CheckCircle,
+  User,
+  AlertCircle,
+  Info,
+  Eye,
+  Download,
+  Lock,
+  Unlock,
+  Clock,
+  Shield,
+  X,
+} from "lucide-react"
 import { clickPayment } from "@/lib/analytics"
-import ChatbotMessenger from "./chatbot-messenger"
+import { useLanguage } from "@/contexts/language-context"
+import ChatbotMessenger from "@/components/chatbot-messenger"
 
-export default function ResultsContainer({
-  searchName,
-  searchAge,
-}: {
+interface ResultsContainerProps {
   searchName: string
   searchAge?: string
-}) {
-  const { t, paymentLink, userLocation } = useLanguage()
-  const [countdown, setCountdown] = useState(600) // 10 minutes in seconds
-  const [isVisible, setIsVisible] = useState(true)
+  onClose: () => void
+  hasPhoto?: boolean
+}
 
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [countdown])
+export default function ResultsContainer({ searchName, searchAge, onClose, hasPhoto }: ResultsContainerProps) {
+  const [activeSection, setActiveSection] = useState<string | null>(null)
+  const { t, currency, paymentLink, userLocation } = useLanguage()
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`
-  }
-
-  const handleUnlock = () => {
+  const handleUnlockClick = () => {
     clickPayment()
-    window.open(paymentLink, "_blank")
   }
 
-  if (!isVisible) return null
+  const formatLocationText = (text: string) => {
+    return text.replace("{city}", userLocation.city)
+  }
 
-  const displayAgeVariation = (age: string | undefined) => {
-    if (!age) return t("results.notProvided", "N/A")
-    const ageNum = Number.parseInt(age)
-    if (isNaN(ageNum)) return t("results.notProvided", "N/A")
+  const displayAge = (baseAge?: string) => {
+    if (!baseAge) return "N/A"
+    const ageNum = Number.parseInt(baseAge, 10)
+    if (isNaN(ageNum)) return baseAge
+    return `${ageNum} years old`
+  }
+  const displayAgeVariation = (baseAge?: string) => {
+    if (!baseAge) return "N/A"
+    const ageNum = Number.parseInt(baseAge, 10)
+    if (isNaN(ageNum)) return baseAge
+    return `${ageNum + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3)} years old`
+  }
 
-    const lowerBound = ageNum - 2 >= 18 ? ageNum - 2 : 18
-    const upperBound = ageNum + 2
-
-    return `${lowerBound}-${upperBound} ${t("results.yearsOldSuffix", "years old")}`
+  const scrollToPayment = () => {
+    const paymentSection = document.getElementById("payment-section")
+    if (paymentSection) {
+      paymentSection.scrollIntoView({ behavior: "smooth" })
+    }
   }
 
   return (
-    <div className="bg-[#f5f1e8] py-8 px-4 md:py-12">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-          {/* Header */}
-          <div className="bg-[#dc2626] text-white p-4 md:p-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between">
-              <div>
-                <h2 className="text-xl md:text-2xl font-bold">
-                  {t("results.title")} {searchName}
-                  {searchAge && (
-                    <span className="ml-2 text-lg font-normal">
-                      ({t("results.ageLabel")} {searchAge})
-                    </span>
-                  )}
-                </h2>
-                <p className="text-sm md:text-base mt-1">
-                  {t("results.location")} {userLocation.city}
-                </p>
-              </div>
-              <div className="mt-2 md:mt-0 flex items-center">
-                <div className="bg-white bg-opacity-20 rounded-full h-2 w-2 mr-2 animate-pulse"></div>
-                <span className="text-sm">{t("results.scanComplete")}</span>
+    <div className="results-container">
+      <div className="results-content">
+        <div className="result-header">
+          <div className="search-summary">
+            <div className="bg-red-500 h-10 w-10 rounded-full flex items-center justify-center text-white">
+              <Search size={20} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                {t("results.title")} <span className="text-red-500 text-3xl">{searchName}</span>
+                {searchAge && (
+                  <span className="text-gray-600 text-xl ml-2">
+                    ({t("results.ageLabel")} {searchAge})
+                  </span>
+                )}
+              </h2>
+              <div className="location-match-tag mt-2">
+                <MapPin className="mr-2" size={14} />
+                {t("results.location")} {userLocation.city}
               </div>
             </div>
           </div>
 
-          {/* Results Summary */}
-          <div className="p-4 md:p-6 border-b border-gray-200">
-            <div className="flex flex-col md:flex-row md:items-center justify-between">
-              <div>
-                <p className="text-lg font-medium">
-                  {t("results.found")} <span className="text-[#dc2626] font-bold">{t("results.activeProfiles")}</span>{" "}
-                  {t("results.matching")}
-                </p>
-                <div className="mt-2 flex items-center text-sm text-gray-600">
-                  <span className="mr-4">
-                    {t("results.appsSearched")}: {t("results.platforms")}
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4 md:mt-0 bg-yellow-50 border border-yellow-200 rounded-md p-3 text-sm">
-                <div className="flex items-center text-yellow-800">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {t("results.countdown")}: {formatTime(countdown)}
-                </div>
-              </div>
+          <div className="search-insight">
+            <AlertCircle size={20} />
+            <div className="search-insight-text ml-2">
+              {t("results.found")} <span className="search-insight-bold">{t("results.activeProfiles")}</span>{" "}
+              {t("results.matching")}
             </div>
           </div>
 
-          {/* Profile Cards */}
-          <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Profile 1 */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-              <div className="bg-gray-50 p-4 border-b border-gray-200">
-                <div className="flex justify-between items-center">
-                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {t("results.highMatch")}
-                  </span>
-                  <span className="text-xs text-gray-500">{t("results.active")}</span>
-                </div>
-                <h3 className="mt-2 font-medium">{searchName}</h3>
-                <div className="mt-1 text-sm text-gray-600">
-                  <p>
-                    {t("results.datingApps")} {t("results.apps")}{" "}
-                    <span className="text-[#dc2626]">{t("results.others")}</span>
-                  </p>
-                  <p className="mt-1">
-                    {t("results.confidence")} <span className="font-medium">{t("results.match")}</span>
-                  </p>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="space-y-2 text-sm">
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.email")}</span>
-                    <span className="blur-sm">••••••@••••.com</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.phone")}</span>
-                    <span className="blur-sm">+•• •• •••• ••••</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.address")}</span>
-                    <span>
-                      {userLocation.city}, {userLocation.country_code}
-                    </span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.age")}</span>
-                    <span>
-                      {searchAge
-                        ? `${searchAge} ${t("results.yearsOldSuffix", "years old")}`
-                        : t("results.notProvided", "N/A")}
-                    </span>
-                  </div>
-                  <div className="flex items-start">
-                    <span className="font-medium w-24 shrink-0">{t("results.photos")}</span>
-                    <div className="flex gap-2">
-                      <img
-                        src="/blurred-profile-photo-1.png"
-                        alt="Blurred profile photo 1"
-                        className="w-16 h-16 rounded-md object-cover blur-sm"
-                      />
-                      <img
-                        src="/blurred-profile-photo-2.png"
-                        alt="Blurred profile photo 2"
-                        className="w-16 h-16 rounded-md object-cover blur-sm"
-                      />
-                      <img
-                        src="/blurred-profile-photo-3.png"
-                        alt="Blurred profile photo 3"
-                        className="w-16 h-16 rounded-md object-cover blur-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={handleUnlock}
-                  className="mt-4 w-full bg-[#22c55e] hover:bg-[#16a34a] text-white py-2 px-4 rounded transition-colors duration-200"
-                >
-                  {t("results.unlock")}
-                </button>
+          <div className="match-details-grid">
+            <div className="match-detail-item">
+              <div className="text-sm text-gray-500">{t("results.appsSearched")}</div>
+              <div className="font-medium">{t("results.platforms")}</div>
+              <div className="dating-apps-scanned mt-1 flex items-center text-green-600">
+                <CheckCircle size={14} className="mr-1" /> {t("results.scanComplete")}
               </div>
             </div>
-
-            {/* Profile 2 */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-              <div className="bg-gray-50 p-4 border-b border-gray-200">
-                <div className="flex justify-between items-center">
-                  <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {t("results.basicMatch")}
-                  </span>
-                  <span className="text-xs text-gray-500">{t("results.activeYesterday")}</span>
-                </div>
-                <h3 className="mt-2 font-medium">{searchName}</h3>
-                <div className="mt-1 text-sm text-gray-600">
-                  <p>
-                    {t("results.datingApps")} {t("results.apps")}
-                  </p>
-                  <p className="mt-1">
-                    {t("results.confidence")}{" "}
-                    <span className="font-medium">65% {t("results.match").split(" ")[1]}</span>
-                  </p>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="space-y-2 text-sm">
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.email")}</span>
-                    <span className="blur-sm">••••@••••.com</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.phone")}</span>
-                    <span className="blur-sm">+•• •• •••• ••••</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.address")}</span>
-                    <span>
-                      {userLocation.city}, {userLocation.country_code}
-                    </span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.age")}</span>
-                    <span>{displayAgeVariation(searchAge)}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <span className="font-medium w-24 shrink-0">{t("results.photos")}</span>
-                    <div className="flex gap-2">
-                      <img
-                        src="/blurred-profile-photo-4.png"
-                        alt="Blurred profile photo 4"
-                        className="w-16 h-16 rounded-md object-cover blur-sm"
-                      />
-                      <img
-                        src="/blurred-profile-photo-5.png"
-                        alt="Blurred profile photo 5"
-                        className="w-16 h-16 rounded-md object-cover blur-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={handleUnlock}
-                  className="mt-4 w-full bg-[#22c55e] hover:bg-[#16a34a] text-white py-2 px-4 rounded transition-colors duration-200"
-                >
-                  {t("results.unlock")}
-                </button>
-              </div>
+            <div className="match-detail-item">
+              <div className="text-sm text-gray-500">{t("results.recentActivity")}</div>
+              <div className="font-medium">{t("results.today")}</div>
             </div>
-
-            {/* Profile 3 */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-              <div className="bg-gray-50 p-4 border-b border-gray-200">
-                <div className="flex justify-between items-center">
-                  <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {t("results.basicMatch")}
-                  </span>
-                  <span className="text-xs text-gray-500">{t("results.activeYesterday")}</span>
-                </div>
-                <h3 className="mt-2 font-medium">{searchName}</h3>
-                <div className="mt-1 text-sm text-gray-600">
-                  <p>
-                    {t("results.datingApps")} {t("results.apps")}
-                  </p>
-                  <p className="mt-1">
-                    {t("results.confidence")}{" "}
-                    <span className="font-medium">60% {t("results.match").split(" ")[1]}</span>
-                  </p>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="space-y-2 text-sm">
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.email")}</span>
-                    <span className="blur-sm">••••@••••.com</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.phone")}</span>
-                    <span className="blur-sm">+•• •• •••• ••••</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.address")}</span>
-                    <span>
-                      {userLocation.city}, {userLocation.country_code}
-                    </span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.age")}</span>
-                    <span>{displayAgeVariation(searchAge)}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <span className="font-medium w-24 shrink-0">{t("results.photos")}</span>
-                    <div className="flex gap-2">
-                      <img
-                        src="/placeholder.svg?height=64&width=64"
-                        alt="Blurred profile photo 6"
-                        className="w-16 h-16 rounded-md object-cover blur-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={handleUnlock}
-                  className="mt-4 w-full bg-[#22c55e] hover:bg-[#16a34a] text-white py-2 px-4 rounded transition-colors duration-200"
-                >
-                  {t("results.unlock")}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Access Complete Details Section */}
-          <div className="p-4 md:p-6 bg-[#f5f1e8] border-t border-gray-200">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-6">
-                <h3 className="text-xl md:text-2xl font-bold">{t("results.accessDetails")}</h3>
-                <p className="text-sm text-gray-600 mt-1">{t("results.oneTime")}</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature1")}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature2")}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature3")}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature4")}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature5")}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature6")}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature7")}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <svg
-                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>{t("results.feature8")}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 text-center">
-                <button
-                  onClick={handleUnlock}
-                  className="bg-[#22c55e] hover:bg-[#16a34a] text-white py-3 px-8 rounded-md text-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
-                >
-                  {t("results.unlock")}
-                </button>
-
-                <div className="mt-6 flex flex-wrap justify-center gap-6">
-                  <div className="flex items-center">
-                    <img src="/secure_icon_2.png" alt="SSL Secure" className="h-10 w-auto mr-2" />
-                    <span className="text-sm text-gray-600">{t("results.securePayment")}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <img src="/secure_icon_3.png" alt="Encrypted" className="h-10 w-auto mr-2" />
-                    <span className="text-sm text-gray-600">{t("results.encrypted")}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <img src="/satisfaction_icon.png" alt="Satisfaction Guaranteed" className="h-10 w-auto mr-2" />
-                    <span className="text-sm text-gray-600">{t("results.lifetimeAccess")}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <img src="/cs_icon.png" alt="Customer Support" className="h-10 w-auto mr-2" />
-                    <span className="text-sm text-gray-600">24/7 Support</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 text-center text-sm text-gray-500">
-                <p>{t("results.viewing").replace("{city}", userLocation.city)}</p>
-              </div>
+            <div className="match-detail-item">
+              <div className="text-sm text-gray-500">{t("results.locationActivity")}</div>
+              <div className="font-medium">{t("results.within")}</div>
             </div>
           </div>
         </div>
+
+        {/* Primary Match */}
+        <div className="result-card premium">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center">
+              <div className="profile-icon bg-red-100 text-red-500">
+                <User size={20} />
+              </div>
+              <div className="ml-3">
+                <h4 className="font-bold text-dark text-xl">{searchName}</h4>
+                <p className="text-sm text-gray-600">{displayAge(searchAge)}</p>
+                <div className="flex items-center mt-1">
+                  <MapPin className="mr-1 text-red-500" size={14} />
+                  <span className="text-sm mr-2">{userLocation.city}</span>
+                  <span className="text-sm text-gray-400">•</span>
+                  <span className="text-sm ml-2">5 km away</span>
+                </div>
+              </div>
+            </div>
+            <div className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center">
+              <AlertCircle size={12} className="mr-1" />
+              {t("results.highMatch")}
+            </div>
+          </div>
+
+          <div className="mt-4 activity-indicator online">
+            <div className="activity-dot online"></div>
+            {t("results.active")}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <p className="text-sm text-gray-500">{t("results.datingApps")}</p>
+              <p className="font-medium">{t("results.apps")}</p>
+              <div className="apps-plus-more">{t("results.others")}</div>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">{t("results.confidence")}</p>
+              <p className="font-medium">{t("results.match")}</p>
+              <div className="match-confidence">
+                <div className="match-confidence-bar" style={{ width: "80%" }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Blurred Personal Information */}
+          <div className="personal-info-section mt-4">
+            <div className="personal-info-blur">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.email")}</div>
+                  <div className="blurred-info-value bg-gray-200 h-5 rounded blur-sm">
+                    <span className="invisible">andrus.kukk@example.com</span>
+                  </div>
+                </div>
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.phone")}</div>
+                  <div className="blurred-info-value bg-gray-200 h-5 rounded blur-sm">
+                    <span className="invisible">+372 5123 4567</span>
+                  </div>
+                </div>
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.address")}</div>
+                  <div className="blurred-info-value">
+                    <span>
+                      {userLocation.city}, {userLocation.country_code}
+                    </span>
+                  </div>
+                </div>
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.age")}</div>
+                  <div className="blurred-info-value">
+                    <span>{searchAge ? `${searchAge} years old` : "N/A"}</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-600 mt-4 mb-2">{t("results.photos")}</p>
+              <div className="flex gap-2">
+                <div className="w-20 h-20 bg-gray-200 rounded-md blur-sm"></div>
+                <div className="w-20 h-20 bg-gray-200 rounded-md blur-sm"></div>
+                <div className="w-20 h-20 bg-gray-200 rounded-md blur-sm"></div>
+              </div>
+            </div>
+
+            <div className="personal-info-lock">
+              <Lock size={24} />
+              <div className="personal-info-lock-text">{t("results.locked")}</div>
+              <a
+                href={paymentLink}
+                className="mt-2 bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm"
+                onClick={handleUnlockClick}
+              >
+                <Unlock size={16} />
+                {t("results.unlock")}
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-between">
+            <Button variant="outline" onClick={scrollToPayment} className="text-sm">
+              <Eye className="mr-1" size={16} /> {t("results.viewDetails")}
+            </Button>
+            <Button className="bg-blue-500 hover:bg-blue-600 text-white text-sm">
+              <Download className="mr-1" size={16} /> {t("results.basicReport")}
+            </Button>
+          </div>
+        </div>
+
+        {/* Second Match */}
+        <div className="result-card basic">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center">
+              <div className="profile-icon bg-blue-100 text-blue-500">
+                <User size={20} />
+              </div>
+              <div className="ml-3">
+                <h4 className="font-bold text-dark text-xl">{searchName}</h4>
+                <p className="text-sm text-gray-600">{displayAgeVariation(searchAge)}</p>
+                <div className="flex items-center mt-1">
+                  <MapPin className="mr-1 text-gray-500" size={14} />
+                  <span className="text-sm mr-2">{userLocation.city}</span>
+                  <span className="text-sm text-gray-400">•</span>
+                  <span className="text-sm ml-2">20 miles away</span>
+                </div>
+              </div>
+            </div>
+            <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center">
+              <Info size={12} className="mr-1" />
+              {t("results.basicMatch")}
+            </div>
+          </div>
+
+          <div className="mt-4 activity-indicator recent">
+            <div className="activity-dot recent"></div>
+            {t("results.activeYesterday")}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <p className="text-sm text-gray-500">{t("results.datingApps")}</p>
+              <p className="font-medium">{t("results.apps")}</p>
+              <div className="apps-plus-more">{t("results.others")}</div>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">{t("results.confidence")}</p>
+              <p className="font-medium">30% match</p>
+              <div className="match-confidence">
+                <div className="match-confidence-bar" style={{ width: "30%" }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Blurred Personal Information */}
+          <div className="personal-info-section mt-4">
+            <div className="personal-info-blur">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.email")}</div>
+                  <div className="blurred-info-value bg-gray-200 h-5 rounded blur-sm">
+                    <span className="invisible">andrus.k@gmail.com</span>
+                  </div>
+                </div>
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.phone")}</div>
+                  <div className="blurred-info-value bg-gray-200 h-5 rounded blur-sm">
+                    <span className="invisible">+372 5987 6543</span>
+                  </div>
+                </div>
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.address")}</div>
+                  <div className="blurred-info-value">
+                    <span>
+                      {userLocation.city}, {userLocation.country_code}
+                    </span>
+                  </div>
+                </div>
+                <div className="blurred-info-item">
+                  <div className="blurred-info-label">{t("results.age")}</div>
+                  <div className="blurred-info-value">
+                    <span>
+                      {searchAge
+                        ? `${Number.parseInt(searchAge, 10) + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 2)} years old`
+                        : "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="personal-info-lock">
+              <Lock size={24} />
+              <div className="personal-info-lock-text">{t("results.locked")}</div>
+              <a
+                href={paymentLink}
+                className="mt-2 bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 py-2 px-4 rounded-lg text-sm"
+                onClick={handleUnlockClick}
+              >
+                <Unlock size={16} />
+                {t("results.unlock")}
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-between">
+            <Button variant="outline" onClick={scrollToPayment} className="text-sm">
+              <Eye className="mr-1" size={16} /> {t("results.viewDetails")}
+            </Button>
+            <Button className="bg-blue-500 hover:bg-blue-600 text-white text-sm">
+              <Download className="mr-1" size={16} /> {t("results.basicReport")}
+            </Button>
+          </div>
+        </div>
+
+        {/* Unlock Panel */}
+        <div id="payment-section" className="unlock-panel">
+          <div className="flex justify-center mb-4">
+            <div className="bg-red-100 h-14 w-14 rounded-full flex items-center justify-center text-red-500">
+              <Lock size={24} />
+            </div>
+          </div>
+          <h3 className="text-xl font-bold text-dark mb-2">{t("results.accessDetails")}</h3>
+          <p className="text-gray-600 mb-4">{t("results.oneTime")}</p>
+
+          <div className="unlock-feature-list">
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature1")}</span>
+            </div>
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature2")}</span>
+            </div>
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature3")}</span>
+            </div>
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature4")}</span>
+            </div>
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature5")}</span>
+            </div>
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature6")}</span>
+            </div>
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature7")}</span>
+            </div>
+            <div className="unlock-feature-item">
+              <CheckCircle className="text-red-500 mr-2" size={16} />
+              <span>{t("results.feature8")}</span>
+            </div>
+          </div>
+
+          <div className="unlock-price">
+            <span>{t("pricing.price")}</span>
+          </div>
+
+          <a
+            href={paymentLink}
+            className="unlock-cta flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg w-full max-w-[280px] mx-auto"
+            onClick={handleUnlockClick}
+          >
+            <Unlock size={18} />
+            {t("results.unlock")}
+          </a>
+
+          <div className="security-badges mt-5">
+            <div className="security-badge">
+              <Lock size={14} className="mr-1" />
+              {t("results.securePayment")}
+            </div>
+            <div className="security-badge">
+              <Shield size={14} className="mr-1" />
+              {t("results.encrypted")}
+            </div>
+            <div className="security-badge">
+              <Clock size={14} className="mr-1" />
+              {t("results.lifetimeAccess")}
+            </div>
+          </div>
+
+          <div className="countdown-timer mt-4">
+            <Clock size={14} className="mr-1 text-red-500" />
+            {t("results.countdown")}
+          </div>
+        </div>
+
+        {/* Users Viewing */}
+        <div className="users-viewing">
+          <div className="users-viewing-dot"></div>
+          <span>{formatLocationText(t("results.viewing"))}</span>
+        </div>
+
+        {/* Close button */}
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500">
+          <X size={24} />
+        </button>
       </div>
 
-      {/* Chatbot Messenger */}
+      {/* Add Chatbot Messenger */}
       <ChatbotMessenger searchName={searchName} searchAge={searchAge} />
     </div>
   )
