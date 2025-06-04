@@ -27,7 +27,7 @@ export default function ChatbotMessenger({ searchName, searchAge }: ChatbotMesse
   const [isLoading, setIsLoading] = useState(false)
   const [hasInitialized, setHasInitialized] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const { t, paymentLink, userLocation } = useLanguage()
+  const { t, paymentLink, userLocation, locale } = useLanguage()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -51,9 +51,30 @@ export default function ChatbotMessenger({ searchName, searchAge }: ChatbotMesse
   }, [hasInitialized])
 
   const sendInitialMessage = () => {
+    let initialContent = ""
+    const matchPercentage = Math.floor(Math.random() * (99 - 92 + 1)) + 92 // Random between 92-99%
+
+    const highlightedName = `<span class="font-bold text-[#dc2626]">${searchName}</span>`
+    const highlightedAge = searchAge
+      ? `<span class="font-bold text-[#dc2626]">${searchAge} ${t("results.yearsOldSuffix", "years old")}</span>`
+      : ""
+    const highlightedLocation = userLocation.city
+      ? `<span class="font-bold text-[#dc2626]">${t("chatbot.from", "from")} ${userLocation.city}</span>`
+      : ""
+
+    const userDetails = `${highlightedName}${highlightedAge ? `, ${highlightedAge}` : ""}${highlightedLocation ? `, ${highlightedLocation}` : ""}`
+
+    if (locale === "fr") {
+      initialContent = `Nous avons trouvé une correspondance à <span class="font-bold text-[#22c55e]">${matchPercentage}%</span> pour ${userDetails}. Souhaitez-vous voir les détails complets ?`
+    } else if (locale === "tr") {
+      initialContent = `${userDetails} için <span class="font-bold text-[#22c55e]">%${matchPercentage}</span> oranında bir eşleşme bulduk. Tüm ayrıntıları görmek ister misiniz?`
+    } else {
+      initialContent = `We found a <span class="font-bold text-[#22c55e]">${matchPercentage}% Match</span> for ${userDetails}. Would you like to see the full details?`
+    }
+
     const initialMessage: Message = {
       id: Date.now().toString(),
-      content: `Hi! I see you found results for ${searchName}. I'm here to help you understand what we found and answer any questions about unlocking the full report. Would you like to know more about what's included?`,
+      content: initialContent,
       isBot: true,
       timestamp: new Date(),
     }
@@ -177,17 +198,18 @@ export default function ChatbotMessenger({ searchName, searchAge }: ChatbotMesse
             >
               <div className="flex items-start">
                 {message.isBot && <Bot size={16} className="mr-2 mt-0.5 flex-shrink-0 text-[#dc2626]" />}
-                <div className="text-sm">{message.content}</div>
+                <div className="text-sm" dangerouslySetInnerHTML={{ __html: message.content }}></div>
                 {!message.isBot && <User size={16} className="ml-2 mt-0.5 flex-shrink-0" />}
               </div>
-              {message.content.includes("unlock") && message.isBot && (
-                <Button
-                  onClick={handleUnlockClick}
-                  className="mt-2 bg-[#22c55e] hover:bg-[#16a34a] text-white text-xs py-1 px-3 h-auto"
-                >
-                  Unlock Now
-                </Button>
-              )}
+              {message.isBot &&
+                messages.indexOf(message) === 0 && ( // Show for the first bot message
+                  <Button
+                    onClick={handleUnlockClick}
+                    className="mt-3 bg-[#22c55e] hover:bg-[#16a34a] text-white text-xs py-1.5 px-3 h-auto rounded-md font-medium"
+                  >
+                    {`${t("pricing.price")} - Unlimited Searches`}
+                  </Button>
+                )}
             </div>
           </div>
         ))}
