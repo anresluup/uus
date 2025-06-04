@@ -51,18 +51,22 @@ export default function Home() {
   }
 
   return (
-    <main>
-      <Header onScanNowClick={() => handleStartScan()} />
-      <HeroSection onStartScan={handleStartScan} onPhotoUpload={handlePhotoUpload} />
-      <FeaturedSection />
-      <HowItWorksSection />
-      <PrivacySection />
-      <TrustSection />
-      <PricingSection />
-      <TestimonialsSection />
-      <FaqSection />
-      <CtaSection onStartScan={() => handleStartScan()} />
-      <Footer />
+    <>
+      {!showResults && (
+        <main>
+          <Header onScanNowClick={() => handleStartScan()} />
+          <HeroSection onStartScan={handleStartScan} onPhotoUpload={handlePhotoUpload} />
+          <FeaturedSection />
+          <HowItWorksSection />
+          <PrivacySection />
+          <TrustSection />
+          <PricingSection />
+          <TestimonialsSection />
+          <FaqSection />
+          <CtaSection onStartScan={() => handleStartScan()} />
+          <Footer />
+        </main>
+      )}
 
       {showScanOverlay && (
         <ScanOverlay searchName={searchName} searchAge={searchAge} onCancel={handleCancelScan} hasPhoto={!!photoFile} />
@@ -76,6 +80,6 @@ export default function Home() {
           hasPhoto={!!photoFile}
         />
       )}
-    </main>
+    </>
   )
 }

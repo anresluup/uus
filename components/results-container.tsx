@@ -36,6 +36,17 @@ export default function ResultsContainer({
 
   if (!isVisible) return null
 
+  const displayAgeVariation = (age: string | undefined) => {
+    if (!age) return t("results.notProvided", "N/A")
+    const ageNum = Number.parseInt(age)
+    if (isNaN(ageNum)) return t("results.notProvided", "N/A")
+
+    const lowerBound = ageNum - 2 >= 18 ? ageNum - 2 : 18
+    const upperBound = ageNum + 2
+
+    return `${lowerBound}-${upperBound} ${t("results.yearsOldSuffix", "years old")}`
+  }
+
   return (
     <div className="bg-[#f5f1e8] py-8 px-4 md:py-12">
       <div className="max-w-6xl mx-auto">
@@ -131,15 +142,37 @@ export default function ResultsContainer({
                   </div>
                   <div className="flex">
                     <span className="font-medium w-24">{t("results.address")}</span>
-                    <span className="blur-sm">•••• •••••• ••</span>
+                    <span>
+                      {userLocation.city}, {userLocation.country_code}
+                    </span>
                   </div>
                   <div className="flex">
                     <span className="font-medium w-24">{t("results.age")}</span>
-                    <span className="blur-sm">••</span>
+                    <span>
+                      {searchAge
+                        ? `${searchAge} ${t("results.yearsOldSuffix", "years old")}`
+                        : t("results.notProvided", "N/A")}
+                    </span>
                   </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.photos")}</span>
-                    <span className="text-[#dc2626]">{t("results.locked")}</span>
+                  <div className="flex items-start">
+                    <span className="font-medium w-24 shrink-0">{t("results.photos")}</span>
+                    <div className="flex gap-2">
+                      <img
+                        src="/blurred-profile-photo-1.png"
+                        alt="Blurred profile photo 1"
+                        className="w-16 h-16 rounded-md object-cover blur-sm"
+                      />
+                      <img
+                        src="/blurred-profile-photo-2.png"
+                        alt="Blurred profile photo 2"
+                        className="w-16 h-16 rounded-md object-cover blur-sm"
+                      />
+                      <img
+                        src="/blurred-profile-photo-3.png"
+                        alt="Blurred profile photo 3"
+                        className="w-16 h-16 rounded-md object-cover blur-sm"
+                      />
+                    </div>
                   </div>
                 </div>
                 <button
@@ -183,15 +216,28 @@ export default function ResultsContainer({
                   </div>
                   <div className="flex">
                     <span className="font-medium w-24">{t("results.address")}</span>
-                    <span className="blur-sm">•••• •••••• ••</span>
+                    <span>
+                      {userLocation.city}, {userLocation.country_code}
+                    </span>
                   </div>
                   <div className="flex">
                     <span className="font-medium w-24">{t("results.age")}</span>
-                    <span className="blur-sm">••</span>
+                    <span>{displayAgeVariation(searchAge)}</span>
                   </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.photos")}</span>
-                    <span className="text-[#dc2626]">{t("results.locked")}</span>
+                  <div className="flex items-start">
+                    <span className="font-medium w-24 shrink-0">{t("results.photos")}</span>
+                    <div className="flex gap-2">
+                      <img
+                        src="/blurred-profile-photo-4.png"
+                        alt="Blurred profile photo 4"
+                        className="w-16 h-16 rounded-md object-cover blur-sm"
+                      />
+                      <img
+                        src="/blurred-profile-photo-5.png"
+                        alt="Blurred profile photo 5"
+                        className="w-16 h-16 rounded-md object-cover blur-sm"
+                      />
+                    </div>
                   </div>
                 </div>
                 <button
@@ -235,15 +281,23 @@ export default function ResultsContainer({
                   </div>
                   <div className="flex">
                     <span className="font-medium w-24">{t("results.address")}</span>
-                    <span className="blur-sm">•••• •••••• ••</span>
+                    <span>
+                      {userLocation.city}, {userLocation.country_code}
+                    </span>
                   </div>
                   <div className="flex">
                     <span className="font-medium w-24">{t("results.age")}</span>
-                    <span className="blur-sm">••</span>
+                    <span>{displayAgeVariation(searchAge)}</span>
                   </div>
-                  <div className="flex">
-                    <span className="font-medium w-24">{t("results.photos")}</span>
-                    <span className="text-[#dc2626]">{t("results.locked")}</span>
+                  <div className="flex items-start">
+                    <span className="font-medium w-24 shrink-0">{t("results.photos")}</span>
+                    <div className="flex gap-2">
+                      <img
+                        src="/placeholder.svg?height=64&width=64"
+                        alt="Blurred profile photo 6"
+                        className="w-16 h-16 rounded-md object-cover blur-sm"
+                      />
+                    </div>
                   </div>
                 </div>
                 <button
@@ -378,19 +432,19 @@ export default function ResultsContainer({
 
                 <div className="mt-6 flex flex-wrap justify-center gap-6">
                   <div className="flex items-center">
-                    <img src="/secure-icon-2.png" alt="SSL Secure" className="h-10 w-auto mr-2" />
+                    <img src="/secure_icon_2.png" alt="SSL Secure" className="h-10 w-auto mr-2" />
                     <span className="text-sm text-gray-600">{t("results.securePayment")}</span>
                   </div>
                   <div className="flex items-center">
-                    <img src="/secure-icon-3.png" alt="Encrypted" className="h-10 w-auto mr-2" />
+                    <img src="/secure_icon_3.png" alt="Encrypted" className="h-10 w-auto mr-2" />
                     <span className="text-sm text-gray-600">{t("results.encrypted")}</span>
                   </div>
                   <div className="flex items-center">
-                    <img src="/satisfaction-icon.png" alt="Satisfaction Guaranteed" className="h-10 w-auto mr-2" />
+                    <img src="/satisfaction_icon.png" alt="Satisfaction Guaranteed" className="h-10 w-auto mr-2" />
                     <span className="text-sm text-gray-600">{t("results.lifetimeAccess")}</span>
                   </div>
                   <div className="flex items-center">
-                    <img src="/cs-icon.png" alt="Customer Support" className="h-10 w-auto mr-2" />
+                    <img src="/cs_icon.png" alt="Customer Support" className="h-10 w-auto mr-2" />
                     <span className="text-sm text-gray-600">24/7 Support</span>
                   </div>
                 </div>
