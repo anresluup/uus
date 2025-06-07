@@ -29,17 +29,22 @@ type LanguageContextType = {
 const defaultLanguageContext: LanguageContextType = {
   locale: "en",
   t: (key: string) => key,
-  currency: "€",
+  currency: "$",
   setLocale: () => {},
   userLocation: {
     city: "your city",
     country: "your country",
   },
   pricing: {
-    price: "2",
-    symbol: "€",
-    code: "EUR",
-    formatted: "€2",
+    price: "5.00",
+    symbol: "$",
+    code: "USD",
+    formatted: "$5.00",
+    promotional: {
+      originalPrice: "25.00",
+      discountedPrice: "5.00",
+      discountPercentage: 80,
+    },
   },
 }
 
@@ -49,19 +54,19 @@ export const useLanguage = () => useContext(LanguageContext)
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useState<Locale>("en")
-  const [currency, setCurrency] = useState("€")
+  const [currency, setCurrency] = useState("$")
   const [userLocation, setUserLocation] = useState({
     city: "your city",
     country: "your country",
   })
   const [pricing, setPricing] = useState({
-    price: "2",
-    symbol: "€",
-    code: "EUR",
-    formatted: "€2",
+    price: "5.00",
+    symbol: "$",
+    code: "USD",
+    formatted: "$5.00",
     promotional: {
-      originalPrice: "10",
-      discountedPrice: "2",
+      originalPrice: "25.00",
+      discountedPrice: "5.00",
       discountPercentage: 80,
     },
   })
@@ -74,7 +79,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         const browserLang = navigator.language.split("-")[0].toLowerCase()
         if (browserLang === "fr") {
           setLocale("fr" as Locale)
-          setCurrency("€")
+          setCurrency("$")
         }
 
         // Get user location
@@ -84,60 +89,19 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
           country: locationData.country || "Estonia",
         })
 
-        // Set pricing based on country
-        let currencyData
-
-        // Force EUR for Estonia and other Euro countries
-        if (
-          locationData.country_code === "EE" ||
-          locationData.country_code === "FR" ||
-          locationData.country_code === "DE" ||
-          locationData.country_code === "IT" ||
-          locationData.country_code === "ES" ||
-          locationData.country_code === "NL" ||
-          locationData.country_code === "BE" ||
-          locationData.country_code === "AT" ||
-          locationData.country_code === "PT" ||
-          locationData.country_code === "GR" ||
-          locationData.country_code === "FI" ||
-          locationData.country_code === "IE" ||
-          locationData.country_code === "LV" ||
-          locationData.country_code === "LT" ||
-          locationData.country_code === "SK" ||
-          locationData.country_code === "SI"
-        ) {
-          currencyData = {
-            price: "2",
-            symbol: "€",
-            code: "EUR",
-            formatted: "€2",
-            promotional: {
-              originalPrice: "10",
-              discountedPrice: "2",
-              discountPercentage: 80,
-            },
-          }
-        } else {
-          // For other countries, convert from EUR to local currency
-          const convertedData = convertCurrency(locationData.country_code)
-
-          // Add promotional pricing (was 5x the current price)
-          const originalPrice = (Number.parseFloat(convertedData.price) * 5).toFixed(2)
-
-          currencyData = {
-            ...convertedData,
-            promotional: {
-              originalPrice: originalPrice,
-              discountedPrice: convertedData.price,
-              discountPercentage: 80,
-            },
-          }
-        }
-
-        setPricing(currencyData)
-
-        // Update currency for backward compatibility
-        setCurrency(currencyData.symbol)
+        // Set pricing to always be $5 USD
+        setPricing({
+          price: "5.00",
+          symbol: "$",
+          code: "USD",
+          formatted: "$5.00",
+          promotional: {
+            originalPrice: "25.00",
+            discountedPrice: "5.00",
+            discountPercentage: 80,
+          },
+        })
+        setCurrency("$")
 
         // If location detection worked, use that for language
         if (locationData.country_code === "FR") {
@@ -146,19 +110,19 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         console.error("Error detecting country:", error)
 
-        // Default to EUR
+        // Default to USD
         setPricing({
-          price: "2",
-          symbol: "€",
-          code: "EUR",
-          formatted: "€2",
+          price: "5.00",
+          symbol: "$",
+          code: "USD",
+          formatted: "$5.00",
           promotional: {
-            originalPrice: "10",
-            discountedPrice: "2",
+            originalPrice: "25.00",
+            discountedPrice: "5.00",
             discountPercentage: 80,
           },
         })
-        setCurrency("€")
+        setCurrency("$")
       }
     }
 
@@ -201,26 +165,4 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </LanguageContext.Provider>
   )
-}
-
-// Simple currency conversion function
-function convertCurrency(countryCode: string) {
-  // Default to EUR
-  const defaultCurrency = {
-    price: "2",
-    symbol: "€",
-    code: "EUR",
-    formatted: "€2",
-  }
-
-  // Map of country codes to currency data
-  const currencyMap: Record<string, any> = {
-    US: { price: "2.18", symbol: "$", code: "USD", formatted: "$2.18" },
-    GB: { price: "1.72", symbol: "£", code: "GBP", formatted: "£1.72" },
-    CA: { price: "2.96", symbol: "$", code: "CAD", formatted: "$2.96" },
-    AU: { price: "3.32", symbol: "$", code: "AUD", formatted: "$3.32" },
-    // Add more currencies as needed
-  }
-
-  return currencyMap[countryCode] || defaultCurrency
 }
