@@ -5,6 +5,7 @@ import Script from "next/script"
 import { usePathname, useSearchParams } from "next/navigation"
 
 export const GA_MEASUREMENT_ID = "G-F3N1NCCD38"
+export const GOOGLE_ADS_ID = "AW-17119826490"
 
 export default function GoogleAnalytics() {
   const pathname = usePathname()

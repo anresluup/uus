@@ -684,3 +684,48 @@
   font-size: 14px;
   color: #777;
 }
+
+/* Add some mobile-specific utilities to globals.css */
+
+/* Add these styles at the end of the file */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@media (max-width: 640px) {
+  .text-xs-mobile {
+    font-size: 0.75rem;
+  }
+
+  .text-sm-mobile {
+    font-size: 0.875rem;
+  }
+
+  .p-reduced-mobile {
+    padding: 0.5rem;
+  }
+
+  .my-reduced-mobile {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Improve input fields on mobile */
+input,
+select,
+textarea {
+  font-size: 16px !important; /* Prevents iOS zoom on focus */
+}
+
+/* Add smooth scrolling for the whole page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Make images responsive by default */
+img {
+  max-width: 100%;
+  height: auto;
+}

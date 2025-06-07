@@ -1,39 +1,51 @@
-const FeaturedSection = () => {
-  return (
-    <div className="bg-transparent py-6">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-6">
-          <p className="text-2xl font-bold tracking-tight text-gray-900 mb-2">Featured In</p>
-          <p className="text-lg text-gray-600">
-            We've been fortunate to be recognized by leading publications and platforms.
-          </p>
-        </div>
+"use client"
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
-          <img
-            src="/product-hunt-logo-transparent.png"
-            alt="Product Hunt"
-            className="h-16 md:h-20 lg:h-24 object-contain opacity-80 hover:opacity-100 transition-opacity"
-          />
-          <img
-            src="/forbes-logo-transparent.png"
-            alt="Forbes"
-            className="h-16 md:h-20 lg:h-24 object-contain opacity-80 hover:opacity-100 transition-opacity"
-          />
-          <img
-            src="/lifehacker-logo-transparent.png"
-            alt="Lifehacker"
-            className="h-16 md:h-20 lg:h-24 object-contain opacity-80 hover:opacity-100 transition-opacity"
-          />
-          <img
-            src="/fox-news-logo-transparent.png"
-            alt="Fox News"
-            className="h-16 md:h-20 lg:h-24 object-contain opacity-80 hover:opacity-100 transition-opacity"
-          />
+import { useEffect, useState } from "react"
+
+export default function FeaturedSection() {
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const element = document.getElementById("featured-section")
+      if (element) {
+        const position = element.getBoundingClientRect()
+        if (position.top < window.innerHeight - 100) {
+          setIsVisible(true)
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    handleScroll() // Check on initial load
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
+
+  return (
+    <section
+      id="featured-section"
+      className={`py-12 bg-white transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"}`}
+    >
+      <div className="container mx-auto px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Featured in Leading Publications</h2>
+        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+          <div className="w-24 md:w-32 h-auto grayscale hover:grayscale-0 transition-all duration-300">
+            <img src="/forbes-logo-generic.png" alt="Forbes" className="w-full h-auto" />
+          </div>
+          <div className="w-24 md:w-32 h-auto grayscale hover:grayscale-0 transition-all duration-300">
+            <img src="/techcrunch-logo.png" alt="TechCrunch" className="w-full h-auto" />
+          </div>
+          <div className="w-24 md:w-32 h-auto grayscale hover:grayscale-0 transition-all duration-300">
+            <img src="/wired-logo.png" alt="Wired" className="w-full h-auto" />
+          </div>
+          <div className="w-24 md:w-32 h-auto grayscale hover:grayscale-0 transition-all duration-300">
+            <img src="/product-hunt-logo.png" alt="Product Hunt" className="w-full h-auto" />
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
-
-export default FeaturedSection
