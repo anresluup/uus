@@ -287,9 +287,9 @@ export default function ResultsContainer({
 
             {/* Payment CTA */}
             <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-xl font-bold mb-2 text-center">Unlock Complete Profile</h3>
+              <h3 className="text-xl font-bold mb-2 text-center">Get Unlimited Searches</h3>
               <p className="text-sm text-gray-600 text-center mb-6">
-                One-time payment of {pricing.formatted}, lifetime access
+                One-time payment of {pricing.formatted}, unlimited searches forever
               </p>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -353,7 +353,7 @@ export default function ResultsContainer({
                 className="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-center mb-4"
                 onClick={handlePaymentClick}
               >
-                UNLOCK ALL PROFILES NOW
+                GET UNLIMITED SEARCHES NOW
               </a>
 
               <div className="flex justify-center space-x-6">
@@ -367,7 +367,7 @@ export default function ResultsContainer({
                 </div>
                 <div className="flex items-center text-xs text-gray-500">
                   <Check className="mr-1" size={12} />
-                  <span>Lifetime Access</span>
+                  <span>Unlimited Searches</span>
                 </div>
               </div>
             </div>

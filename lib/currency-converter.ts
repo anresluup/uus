@@ -135,7 +135,7 @@ export function getPromotionalPricing(
   return null
 }
 
-const basePrice = 2 // EUR
+const basePrice = 5 // USD (changed from 2 EUR)
 
 export function convertCurrency(countryCode: string): {
   price: string

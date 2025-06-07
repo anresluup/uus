@@ -37,7 +37,7 @@ export default function PricingSection() {
             <div className="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full inline-block mb-4">
               BEST VALUE
             </div>
-            <h3 className="text-xl md:text-2xl font-bold mb-2">Lifetime Access</h3>
+            <h3 className="text-xl md:text-2xl font-bold mb-2">Unlimited Searches</h3>
             <div className="text-center mb-4">
               {pricing.promotional ? (
                 <>
@@ -61,12 +61,12 @@ export default function PricingSection() {
                 Offer expires in: {formatTime(countdown)}
               </div>
             </div>
-            <p className="text-gray-500 mb-6 text-sm md:text-base">One-time payment, unlimited access</p>
+            <p className="text-gray-500 mb-6 text-sm md:text-base">One-time payment, unlimited searches forever</p>
 
             <ul className="text-left space-y-3 mb-8 text-sm md:text-base">
               <li className="flex items-start">
                 <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
-                <span>Full dating profile details</span>
+                <span>Unlimited profile searches</span>
               </li>
               <li className="flex items-start">
                 <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
@@ -82,7 +82,7 @@ export default function PricingSection() {
               </li>
               <li className="flex items-start">
                 <Check className="text-green-500 mr-3 flex-shrink-0 mt-0.5" size={18} />
-                <span>Downloadable PDF report</span>
+                <span>Downloadable PDF reports</span>
               </li>
             </ul>
 
@@ -91,7 +91,7 @@ export default function PricingSection() {
               className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-black py-4 px-6 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center text-base md:text-lg transform hover:scale-105"
               onClick={handlePaymentClick}
             >
-              UNLOCK EVERYTHING NOW →
+              GET UNLIMITED SEARCHES NOW →
             </a>
 
             <div className="flex justify-center space-x-4 mt-6">
