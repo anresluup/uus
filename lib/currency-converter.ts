@@ -1,5 +1,5 @@
 // Simple $5 USD pricing everywhere - no currency conversion
-const basePrice = 5 // USD
+const basePrice = 0.2 // USD (changed from 5)
 
 export function convertCurrency(countryCode: string): {
   price: string
@@ -8,10 +8,10 @@ export function convertCurrency(countryCode: string): {
   formatted: string
 } {
   return {
-    price: "5.00",
+    price: "0.20",
     symbol: "$",
     code: "USD",
-    formatted: "$5.00",
+    formatted: "$0.20",
   }
 }
 
@@ -24,8 +24,8 @@ export function getPromotionalPrice(countryCode: string): {
   discountPercentage: number
 } {
   return {
-    originalPrice: "25.00",
-    discountedPrice: "5.00",
+    originalPrice: "1.00",
+    discountedPrice: "0.20",
     symbol: "$",
     code: "USD",
     discountPercentage: 80,

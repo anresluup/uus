@@ -36,13 +36,13 @@ const defaultLanguageContext: LanguageContextType = {
     country: "your country",
   },
   pricing: {
-    price: "5.00",
+    price: "0.20",
     symbol: "$",
     code: "USD",
-    formatted: "$5.00",
+    formatted: "$0.20",
     promotional: {
-      originalPrice: "25.00",
-      discountedPrice: "5.00",
+      originalPrice: "1.00",
+      discountedPrice: "0.20",
       discountPercentage: 80,
     },
   },
@@ -60,13 +60,13 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     country: "your country",
   })
   const [pricing, setPricing] = useState({
-    price: "5.00",
+    price: "0.20",
     symbol: "$",
     code: "USD",
-    formatted: "$5.00",
+    formatted: "$0.20",
     promotional: {
-      originalPrice: "25.00",
-      discountedPrice: "5.00",
+      originalPrice: "1.00",
+      discountedPrice: "0.20",
       discountPercentage: 80,
     },
   })
@@ -89,15 +89,15 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
           country: locationData.country || "Estonia",
         })
 
-        // Set pricing to always be $5 USD
+        // Set pricing to always be $0.20 USD
         setPricing({
-          price: "5.00",
+          price: "0.20",
           symbol: "$",
           code: "USD",
-          formatted: "$5.00",
+          formatted: "$0.20",
           promotional: {
-            originalPrice: "25.00",
-            discountedPrice: "5.00",
+            originalPrice: "1.00",
+            discountedPrice: "0.20",
             discountPercentage: 80,
           },
         })
@@ -112,13 +112,13 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
         // Default to USD
         setPricing({
-          price: "5.00",
+          price: "0.20",
           symbol: "$",
           code: "USD",
-          formatted: "$5.00",
+          formatted: "$0.20",
           promotional: {
-            originalPrice: "25.00",
-            discountedPrice: "5.00",
+            originalPrice: "1.00",
+            discountedPrice: "0.20",
             discountPercentage: 80,
           },
         })
