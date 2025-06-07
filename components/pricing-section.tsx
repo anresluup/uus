@@ -4,10 +4,15 @@ import { Check, Lock, Shield, AlertTriangle } from "lucide-react"
 import { clickPayment } from "@/lib/analytics"
 import { useLanguage } from "@/contexts/language-context"
 import { useState, useEffect } from "react"
+import { loadStripe } from "@stripe/stripe-js"
+
+// Initialize Stripe.js with your publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function PricingSection() {
   const { pricing } = useLanguage()
   const [countdown, setCountdown] = useState(600)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -22,9 +27,36 @@ export default function PricingSection() {
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = async () => {
     // Track the payment click event
     clickPayment()
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const sessionData = await response.json()
+
+      if (response.ok && sessionData.sessionId) {
+        const stripe = await stripePromise
+        if (stripe) {
+          await stripe.redirectToCheckout({
+            sessionId: sessionData.sessionId,
+          })
+        }
+      } else {
+        console.error("Failed to create checkout session:", sessionData.error)
+      }
+    } catch (err) {
+      console.error("Payment processing error:", err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -39,23 +71,11 @@ export default function PricingSection() {
             </div>
             <h3 className="text-xl md:text-2xl font-bold mb-2">Unlimited Searches</h3>
             <div className="text-center mb-4">
-              {pricing.promotional ? (
-                <>
-                  <div className="bg-yellow-400 text-black text-xs md:text-sm font-bold px-3 py-1 rounded-full inline-block mb-2 animate-pulse">
-                    {pricing.promotional.discountPercentage}% OFF - LIMITED TIME!
-                  </div>
-                  <div className="text-xl md:text-2xl text-gray-500 line-through">
-                    {pricing.symbol}
-                    {pricing.promotional.originalPrice}
-                  </div>
-                  <div className="text-4xl md:text-5xl font-black text-red-500">
-                    {pricing.symbol}
-                    {pricing.promotional.discountedPrice}
-                  </div>
-                </>
-              ) : (
-                <div className="text-4xl md:text-5xl font-black text-red-500">{pricing.formatted}</div>
-              )}
+              <div className="bg-yellow-400 text-black text-xs md:text-sm font-bold px-3 py-1 rounded-full inline-block mb-2 animate-pulse">
+                80% OFF - LIMITED TIME!
+              </div>
+              <div className="text-xl md:text-2xl text-gray-500 line-through">$1.00</div>
+              <div className="text-4xl md:text-5xl font-black text-red-500">$0.20</div>
               <div className="text-red-600 font-bold mt-2 flex items-center justify-center text-sm">
                 <AlertTriangle size={16} className="mr-1" />
                 Offer expires in: {formatTime(countdown)}
@@ -86,13 +106,13 @@ export default function PricingSection() {
               </li>
             </ul>
 
-            <a
-              href="https://gmlkd.ttrk.io/click"
-              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-black py-4 px-6 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center text-base md:text-lg transform hover:scale-105"
+            <button
               onClick={handlePaymentClick}
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-black py-4 px-6 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center text-base md:text-lg transform hover:scale-105 disabled:opacity-70"
             >
-              GET UNLIMITED SEARCHES NOW →
-            </a>
+              {isLoading ? "PROCESSING..." : "GET UNLIMITED SEARCHES NOW →"}
+            </button>
 
             <div className="flex justify-center space-x-4 mt-6">
               <div className="flex items-center text-xs text-gray-500">

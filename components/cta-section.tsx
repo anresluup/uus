@@ -3,10 +3,45 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
+import { loadStripe } from "@stripe/stripe-js"
+
+// Initialize Stripe.js with your publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function CTASection() {
   const [isHovered, setIsHovered] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { t } = useLanguage()
+
+  const handlePaymentClick = async () => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const sessionData = await response.json()
+
+      if (response.ok && sessionData.sessionId) {
+        const stripe = await stripePromise
+        if (stripe) {
+          await stripe.redirectToCheckout({
+            sessionId: sessionData.sessionId,
+          })
+        }
+      } else {
+        console.error("Failed to create checkout session:", sessionData.error)
+      }
+    } catch (err) {
+      console.error("Payment processing error:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <section className="bg-red-500 py-12 md:py-16">
@@ -20,24 +55,32 @@ export default function CTASection() {
           </p>
           <div className="relative inline-block">
             <Button
-              className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold text-lg md:text-xl px-8 py-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 w-full md:w-auto"
+              className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold text-lg md:text-xl px-8 py-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 w-full md:w-auto disabled:opacity-70"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
+              onClick={handlePaymentClick}
+              disabled={isLoading}
             >
               <span className="relative z-10 flex flex-wrap justify-center items-center gap-1 sm:gap-2">
-                <span className="text-sm sm:text-base md:text-lg">
-                  {t("START SCANNING NOW")} - {t("ONLY")}
-                </span>{" "}
-                <span className="relative inline-flex items-center">
-                  <span className="line-through opacity-70 text-xs sm:text-sm">€10</span>
-                  <span className="absolute -top-4 -right-2 transform text-xs bg-red-600 text-white px-1 rounded">
-                    -80%
-                  </span>
-                </span>{" "}
-                <span className="font-extrabold text-base sm:text-lg md:text-xl">€2</span>
+                {isLoading ? (
+                  "Processing..."
+                ) : (
+                  <>
+                    <span className="text-sm sm:text-base md:text-lg">
+                      {t("START SCANNING NOW")} - {t("ONLY")}
+                    </span>{" "}
+                    <span className="relative inline-flex items-center">
+                      <span className="line-through opacity-70 text-xs sm:text-sm">$1.00</span>
+                      <span className="absolute -top-4 -right-2 transform text-xs bg-red-600 text-white px-1 rounded">
+                        -80%
+                      </span>
+                    </span>{" "}
+                    <span className="font-extrabold text-base sm:text-lg md:text-xl">$0.20</span>
+                  </>
+                )}
               </span>
             </Button>
-            {isHovered && (
+            {isHovered && !isLoading && (
               <div className="absolute -inset-1 bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-300 rounded-lg blur opacity-75 animate-pulse"></div>
             )}
           </div>

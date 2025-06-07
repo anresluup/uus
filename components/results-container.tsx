@@ -4,7 +4,10 @@ import { useState, useEffect } from "react"
 import { X, Lock, Check, Clock, MapPin, Shield, AlertCircle, Info } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
 import { clickPayment } from "@/lib/analytics"
-import { getRedTrackUrl } from "@/lib/redtrack-url"
+import { loadStripe } from "@stripe/stripe-js"
+
+// Initialize Stripe.js with your publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 interface ResultsContainerProps {
   searchName: string
@@ -23,7 +26,7 @@ export default function ResultsContainer({
 }: ResultsContainerProps) {
   const [countdown, setCountdown] = useState(600) // 10 minutes
   const { userLocation, pricing } = useLanguage()
-  const [redTrackUrl] = useState(getRedTrackUrl())
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     // Start countdown
@@ -41,8 +44,35 @@ export default function ResultsContainer({
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = async () => {
     clickPayment()
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const sessionData = await response.json()
+
+      if (response.ok && sessionData.sessionId) {
+        const stripe = await stripePromise
+        if (stripe) {
+          await stripe.redirectToCheckout({
+            sessionId: sessionData.sessionId,
+          })
+        }
+      } else {
+        console.error("Failed to create checkout session:", sessionData.error)
+      }
+    } catch (err) {
+      console.error("Payment processing error:", err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // Format the name to show first name and last initial
@@ -183,13 +213,13 @@ export default function ResultsContainer({
                           <AlertCircle size={14} className="mr-1 text-amber-500" />
                           <span>6 profile details hidden</span>
                         </div>
-                        <a
-                          href={redTrackUrl}
-                          className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-md font-medium transition-colors"
+                        <button
                           onClick={handlePaymentClick}
+                          disabled={isLoading}
+                          className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-md font-medium transition-colors disabled:opacity-70"
                         >
-                          Unlock Full Profile ({pricing.formatted})
-                        </a>
+                          {isLoading ? "Processing..." : "Unlock Full Profile ($0.20)"}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -224,13 +254,13 @@ export default function ResultsContainer({
                       <p className="text-xs text-gray-500">2.8 miles away</p>
                     </div>
                   </div>
-                  <a
-                    href={redTrackUrl}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1.5 px-3 rounded-md transition-colors"
+                  <button
                     onClick={handlePaymentClick}
+                    disabled={isLoading}
+                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1.5 px-3 rounded-md transition-colors disabled:opacity-70"
                   >
-                    Unlock ({pricing.formatted})
-                  </a>
+                    {isLoading ? "..." : "Unlock ($0.20)"}
+                  </button>
                 </div>
               </div>
 
@@ -260,13 +290,13 @@ export default function ResultsContainer({
                       <p className="text-xs text-gray-500">5.1 miles away</p>
                     </div>
                   </div>
-                  <a
-                    href={redTrackUrl}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1.5 px-3 rounded-md transition-colors"
+                  <button
                     onClick={handlePaymentClick}
+                    disabled={isLoading}
+                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1.5 px-3 rounded-md transition-colors disabled:opacity-70"
                   >
-                    Unlock ({pricing.formatted})
-                  </a>
+                    {isLoading ? "..." : "Unlock ($0.20)"}
+                  </button>
                 </div>
               </div>
             </div>
@@ -289,7 +319,7 @@ export default function ResultsContainer({
             <div className="bg-gray-50 rounded-lg p-6">
               <h3 className="text-xl font-bold mb-2 text-center">Get Unlimited Searches</h3>
               <p className="text-sm text-gray-600 text-center mb-6">
-                One-time payment of {pricing.formatted}, unlimited searches forever
+                One-time payment of $0.20, unlimited searches forever
               </p>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -332,29 +362,19 @@ export default function ResultsContainer({
               </div>
 
               <div className="text-center mb-6">
-                {pricing.promotional ? (
-                  <div className="mb-2">
-                    <span className="text-gray-500 text-lg line-through mr-2">
-                      {pricing.symbol}
-                      {pricing.promotional.originalPrice}
-                    </span>
-                    <span className="text-green-600 text-2xl font-bold">
-                      {pricing.symbol}
-                      {pricing.promotional.discountedPrice}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="text-green-600 text-2xl font-bold mb-2">{pricing.formatted}</div>
-                )}
+                <div className="mb-2">
+                  <span className="text-gray-500 text-lg line-through mr-2">$1.00</span>
+                  <span className="text-green-600 text-2xl font-bold">$0.20</span>
+                </div>
               </div>
 
-              <a
-                href={redTrackUrl}
-                className="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-center mb-4"
+              <button
                 onClick={handlePaymentClick}
+                disabled={isLoading}
+                className="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-center mb-4 disabled:opacity-70"
               >
-                GET UNLIMITED SEARCHES NOW
-              </a>
+                {isLoading ? "PROCESSING..." : "GET UNLIMITED SEARCHES NOW"}
+              </button>
 
               <div className="flex justify-center space-x-6">
                 <div className="flex items-center text-xs text-gray-500">
