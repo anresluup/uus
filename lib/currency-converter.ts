@@ -1,5 +1,5 @@
-// Simple $0.50 USD pricing everywhere - meets Stripe minimum
-const basePrice = 0.5 // USD (changed to meet Stripe minimum)
+// Simple $1.00 USD pricing everywhere
+const basePrice = 1.0 // USD
 
 export function convertCurrency(countryCode: string): {
   price: string
@@ -8,14 +8,14 @@ export function convertCurrency(countryCode: string): {
   formatted: string
 } {
   return {
-    price: "0.50",
+    price: "1.00",
     symbol: "$",
     code: "USD",
-    formatted: "$0.50",
+    formatted: "$1.00",
   }
 }
 
-// Promotional pricing - was $2.00, now $0.50 (75% off)
+// Promotional pricing - was $5.00, now $1.00 (80% off)
 export function getPromotionalPrice(countryCode: string): {
   originalPrice: string
   discountedPrice: string
@@ -24,11 +24,11 @@ export function getPromotionalPrice(countryCode: string): {
   discountPercentage: number
 } {
   return {
-    originalPrice: "2.00",
-    discountedPrice: "0.50",
+    originalPrice: "5.00",
+    discountedPrice: "1.00",
     symbol: "$",
     code: "USD",
-    discountPercentage: 75,
+    discountPercentage: 80,
   }
 }
 
@@ -42,9 +42,9 @@ export function getCurrencySymbol(currencyCode: string): string {
 }
 
 export function convertPrice(priceUSD: number, targetCurrency: string): number {
-  return 0.5
+  return 1.0
 }
 
 export function formatPrice(price: number, currencyCode: string): string {
-  return "$0.50"
+  return "$1.00"
 }

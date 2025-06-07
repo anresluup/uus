@@ -36,14 +36,14 @@ const defaultLanguageContext: LanguageContextType = {
     country: "your country",
   },
   pricing: {
-    price: "0.50",
+    price: "1.00",
     symbol: "$",
     code: "USD",
-    formatted: "$0.50",
+    formatted: "$1.00",
     promotional: {
-      originalPrice: "2.00",
-      discountedPrice: "0.50",
-      discountPercentage: 75,
+      originalPrice: "5.00",
+      discountedPrice: "1.00",
+      discountPercentage: 80,
     },
   },
 }
@@ -60,14 +60,14 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     country: "your country",
   })
   const [pricing, setPricing] = useState({
-    price: "0.50",
+    price: "1.00",
     symbol: "$",
     code: "USD",
-    formatted: "$0.50",
+    formatted: "$1.00",
     promotional: {
-      originalPrice: "2.00",
-      discountedPrice: "0.50",
-      discountPercentage: 75,
+      originalPrice: "5.00",
+      discountedPrice: "1.00",
+      discountPercentage: 80,
     },
   })
 
@@ -89,16 +89,16 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
           country: locationData.country || "Estonia",
         })
 
-        // Set pricing to always be $0.50 USD (meets Stripe minimum)
+        // Set pricing to always be $1.00 USD
         setPricing({
-          price: "0.50",
+          price: "1.00",
           symbol: "$",
           code: "USD",
-          formatted: "$0.50",
+          formatted: "$1.00",
           promotional: {
-            originalPrice: "2.00",
-            discountedPrice: "0.50",
-            discountPercentage: 75,
+            originalPrice: "5.00",
+            discountedPrice: "1.00",
+            discountPercentage: 80,
           },
         })
         setCurrency("$")
@@ -112,14 +112,14 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
         // Default to USD
         setPricing({
-          price: "0.50",
+          price: "1.00",
           symbol: "$",
           code: "USD",
-          formatted: "$0.50",
+          formatted: "$1.00",
           promotional: {
-            originalPrice: "2.00",
-            discountedPrice: "0.50",
-            discountPercentage: 75,
+            originalPrice: "5.00",
+            discountedPrice: "1.00",
+            discountPercentage: 80,
           },
         })
         setCurrency("$")

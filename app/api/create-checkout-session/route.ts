@@ -43,7 +43,7 @@ export async function POST() {
               description: "One-time payment for unlimited profile searches",
               images: [`${process.env.NEXT_PUBLIC_SITE_URL}/profile-card.png`],
             },
-            unit_amount: 50, // $0.50 in cents
+            unit_amount: 100, // $1.00 in cents
           },
           quantity: 1,
         },
