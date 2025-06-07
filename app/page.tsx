@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Header from "@/components/header"
 import HeroSection from "@/components/hero-section"
@@ -18,7 +18,6 @@ import ScanOverlay from "@/components/scan-overlay"
 import ResultsContainer from "@/components/results-container"
 import PurchasePopup from "@/components/purchase-popup"
 import { startScan } from "@/lib/analytics"
-import { checkUserSearchStatus, recordSearch } from "@/lib/user-tracking"
 
 export default function Home() {
   const [showScanOverlay, setShowScanOverlay] = useState(false)
@@ -33,19 +32,8 @@ export default function Home() {
   const [searchFullName, setSearchFullName] = useState("")
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [blurredPhotoUrl, setBlurredPhotoUrl] = useState<string | null>(null)
-  const [hasSearchedBefore, setHasSearchedBefore] = useState(false)
   const router = useRouter()
   const pricingSectionRef = useRef<HTMLDivElement>(null)
-
-  // Check if user has searched before
-  useEffect(() => {
-    const checkSearchStatus = async () => {
-      const hasSearched = await checkUserSearchStatus()
-      setHasSearchedBefore(hasSearched)
-    }
-
-    checkSearchStatus()
-  }, [])
 
   const scrollToPricing = () => {
     if (pricingSectionRef.current) {
@@ -62,15 +50,6 @@ export default function Home() {
     email?: string,
     fullName?: string,
   ) => {
-    // Check if user has searched before
-    const hasSearched = await checkUserSearchStatus()
-
-    // If they've searched before, show purchase popup instead of starting scan
-    if (hasSearched) {
-      setShowPurchasePopup(true)
-      return
-    }
-
     if (name) {
       setSearchName(name)
     }
@@ -97,10 +76,6 @@ export default function Home() {
 
     // Track the start scan event
     startScan()
-
-    // Record that user has searched
-    await recordSearch()
-    setHasSearchedBefore(true)
 
     // Simulate scan completion after 20 seconds (longer animation)
     setTimeout(() => {
